@@ -1,0 +1,287 @@
+[
+  {
+    "id": "bico-injetor",
+    "name": "Bico Injetor",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "bico injetor",
+      "bicos injetores",
+      "caneta injetora",
+      "unidade injetora"
+    ]
+  },
+  {
+    "id": "bi-turbo-turbina",
+    "name": "Bi turbo/Turbina",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "bi turbo",
+      "biturbo",
+      "turbo",
+      "turbina"
+    ]
+  },
+  {
+    "id": "bloco",
+    "name": "Bloco",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "bloco",
+      "bloco do motor",
+      "bloco motor"
+    ]
+  },
+  {
+    "id": "bomba-injetora-cp3",
+    "name": "Bomba Injetora/Bomba CP3",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "bomba injetora",
+      "bomba cp3",
+      "cp3",
+      "bomba de alta pressão"
+    ]
+  },
+  {
+    "id": "bomba-oleo",
+    "name": "Bomba de Óleo",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "bomba de óleo",
+      "bomba oleo",
+      "bomba do óleo"
+    ]
+  },
+  {
+    "id": "bomba-agua",
+    "name": "Bomba D'Água",
+    "families": [
+      "Motor",
+      "Arrefecimento"
+    ],
+    "aliases": [
+      "bomba d'água",
+      "bomba dagua",
+      "bomba de água",
+      "bomba agua"
+    ]
+  },
+  {
+    "id": "intercooler",
+    "name": "Intercooler",
+    "families": [
+      "Motor",
+      "Arrefecimento"
+    ],
+    "aliases": [
+      "intercooler",
+      "inter cooler"
+    ]
+  },
+  {
+    "id": "kit-motor",
+    "name": "Kit Motor",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "kit motor",
+      "kit do motor"
+    ]
+  },
+  {
+    "id": "motor-parcial",
+    "name": "Motor Parcial",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "motor parcial"
+    ]
+  },
+  {
+    "id": "motor-completo",
+    "name": "Motor Completo",
+    "families": [
+      "Motor"
+    ],
+    "aliases": [
+      "motor completo"
+    ]
+  },
+  {
+    "id": "cambio",
+    "name": "Câmbio",
+    "families": [
+      "Câmbio e Embreagem"
+    ],
+    "aliases": [
+      "câmbio",
+      "cambio",
+      "caixa de câmbio",
+      "caixa de cambio"
+    ]
+  },
+  {
+    "id": "kit-embreagem",
+    "name": "Kit de Embreagem",
+    "families": [
+      "Câmbio e Embreagem"
+    ],
+    "aliases": [
+      "kit de embreagem",
+      "kit embreagem",
+      "embreagem"
+    ]
+  },
+  {
+    "id": "servo-embreagem",
+    "name": "Servo de Embreagem",
+    "families": [
+      "Câmbio e Embreagem"
+    ],
+    "aliases": [
+      "servo de embreagem",
+      "servo embreagem"
+    ]
+  },
+  {
+    "id": "cilindro-mestre",
+    "name": "Cilindro Mestre",
+    "families": [
+      "Câmbio e Embreagem"
+    ],
+    "aliases": [
+      "cilindro mestre",
+      "cilindro mestre da embreagem"
+    ]
+  },
+  {
+    "id": "radiador",
+    "name": "Radiador",
+    "families": [
+      "Arrefecimento"
+    ],
+    "aliases": [
+      "radiador",
+      "radiador de água"
+    ]
+  },
+  {
+    "id": "reservatorio",
+    "name": "Reservatório",
+    "families": [
+      "Arrefecimento"
+    ],
+    "aliases": [
+      "reservatório",
+      "reservatorio",
+      "reservatório de água"
+    ]
+  },
+  {
+    "id": "ventoinha-embreagem-viscosa",
+    "name": "Conjunto da Ventoinha/Embreagem Viscosa",
+    "families": [
+      "Arrefecimento"
+    ],
+    "aliases": [
+      "conjunto da ventoinha",
+      "ventoinha",
+      "hélice do radiador",
+      "embreagem viscosa"
+    ]
+  },
+  {
+    "id": "valvula-termostatica",
+    "name": "Válvula Termostática",
+    "families": [
+      "Arrefecimento"
+    ],
+    "aliases": [
+      "válvula termostática",
+      "valvula termostatica"
+    ]
+  },
+  {
+    "id": "oleo-cambio",
+    "name": "Óleo de Câmbio",
+    "families": [
+      "Lubrificação"
+    ],
+    "aliases": [
+      "óleo de câmbio",
+      "óleo do câmbio",
+      "oleo cambio"
+    ]
+  },
+  {
+    "id": "oleo-diferencial",
+    "name": "Óleo Diferencial",
+    "families": [
+      "Lubrificação"
+    ],
+    "aliases": [
+      "óleo diferencial",
+      "óleo do diferencial",
+      "oleo diferencial"
+    ]
+  },
+  {
+    "id": "oleo-motor",
+    "name": "Óleo Motor",
+    "families": [
+      "Lubrificação"
+    ],
+    "aliases": [
+      "óleo motor",
+      "óleo do motor",
+      "oleo motor"
+    ]
+  },
+  {
+    "id": "filtro-ar",
+    "name": "Filtro de Ar",
+    "families": [
+      "Lubrificação"
+    ],
+    "aliases": [
+      "filtro de ar",
+      "filtro ar"
+    ]
+  },
+  {
+    "id": "filtro-diesel",
+    "name": "Filtro de Diesel",
+    "families": [
+      "Lubrificação"
+    ],
+    "aliases": [
+      "filtro de diesel",
+      "filtro diesel",
+      "filtro de combustível",
+      "filtro combustivel"
+    ]
+  },
+  {
+    "id": "filtro-oleo",
+    "name": "Filtro de Óleo",
+    "families": [
+      "Lubrificação"
+    ],
+    "aliases": [
+      "filtro de óleo",
+      "filtro oleo"
+    ]
+  }
+]

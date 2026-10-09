@@ -1,0 +1,80 @@
+/* Operational refinements share Órbita tokens; semantic information stays legible. */
+.orbit-theme :is(.context-note,.criteria-changed) {
+ font-size:.875rem; line-height:1.7; margin:16px 0;
+ border-left:2px solid var(--cyan); padding:8px 12px; color:var(--dim);
+ background:#05283b55; border-radius:0 8px 8px 0;
+}
+.orbit-theme .criteria-changed { border-color:var(--amber); color:#edd9b3; background:#352a1955; }
+.orbit-theme :is(.operation-status,.export-progress) {
+ display:flex; align-items:center; flex-wrap:wrap; gap:12px; min-width:0;
+ padding:12px 16px; border:1px solid var(--border); border-radius:12px;
+ color:#c5e7ef; background:#08283980; font-size:.875rem;
+}
+.orbit-theme .export-progress>.text-action { margin-left:auto; }
+.orbit-theme .resource-error { padding:16px; border-left:2px solid var(--amber); background:#2b261c55; border-radius:0 12px 12px 0; }
+.orbit-theme .resource-error p { margin:0 0 12px; font-size:.875rem; color:#ecd4ac; line-height:1.7; }
+.orbit-theme .import-recovery { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; border:1px solid var(--border); border-radius:12px; padding:16px 20px; }
+.orbit-theme .import-recovery p { margin:0; color:var(--dim); overflow-wrap:anywhere; }
+.orbit-theme .import-review :is(.section-title h2,.staged-rows p,.staged-rows small) { overflow-wrap:anywhere; }
+.orbit-theme .integration-workspace { min-width:0; }
+.orbit-theme .integration-workspace>.operation-notice { margin:0; }
+
+/* Search stays visible; secondary filters open on demand instead of filling the screen. */
+.orbit-theme .journal-filters { grid-template-columns:minmax(0,1.5fr) minmax(120px,.6fr) minmax(200px,1fr); gap:16px; }
+.orbit-theme .journal-refinement { grid-column:1/-1; border-block:1px solid #284c6199; padding:4px 0; min-width:0; }
+.orbit-theme .journal-refinement>summary { cursor:pointer; min-height:44px; padding:10px 4px; color:#c2dfea; font-size:.875rem; }
+.orbit-theme .journal-refinement>summary::marker { color:var(--cyan); }
+.orbit-theme .journal-refinement>summary>span { color:var(--cyan); }
+.orbit-theme .journal-additional-filters { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; padding:12px 0 16px; }
+.orbit-theme .journal-filter-actions { flex-wrap:wrap; }
+.orbit-theme .journal-toolbar>div { flex-wrap:wrap; }
+.orbit-theme .comparison-changes { border-block:1px solid var(--border); padding:20px 0; margin-bottom:24px; }
+.orbit-theme .comparison-changes h3 { font-size:1rem; margin:0 0 12px; }
+.orbit-theme .comparison-changes>p { color:var(--dim); font-size:.875rem; }
+.orbit-theme .comparison-changes>div { display:grid; grid-template-columns:1fr 1.2fr 1.2fr; gap:16px; padding:12px 0; border-top:1px solid #21435780; font-size:.875rem; }
+.orbit-theme .comparison-changes strong { color:#d2ecf4; font-weight:500; }
+.orbit-theme .comparison-changes span { color:var(--dim); overflow-wrap:anywhere; white-space:pre-wrap; }
+.orbit-theme .change-fields { margin:20px 0 0; }
+.orbit-theme .change-fields>div { padding:12px 0; border-top:1px solid var(--border); }
+.orbit-theme .change-fields dt { color:#d2ecf4; font-weight:500; font-size:.875rem; }
+.orbit-theme .change-fields dd { display:grid; gap:8px; margin:8px 0 0; color:var(--dim); overflow-wrap:anywhere; font-size:.875rem; }
+.orbit-theme .review-actions button[aria-pressed=true] { border-color:var(--orbit-selected-edge); background:var(--orbit-control-active); box-shadow:inset 0 -2px 0 var(--cyan); }
+.orbit-theme .human-review :is(.current-comparison,.decision-trail) { overflow-wrap:anywhere; }
+.orbit-theme .human-review>p[role=status] { color:var(--dim); font-size:.875rem; }
+
+/* One accessible approval dialog, above sheets and persistent navigation. */
+.orbit-theme [data-slot=alert-dialog-overlay] { z-index:110; background:#000b; }
+.orbit-theme .orbit-confirmation { z-index:111; max-height:calc(100svh - 32px); overflow-y:auto; width:min(520px,calc(100vw - 32px)); border:1px solid #3d687f; border-radius:16px; background:#0b2031; padding:24px; box-shadow:0 16px 48px #0005; }
+.orbit-theme .orbit-confirmation [data-slot=alert-dialog-title] { color:var(--ink); font-size:1.25rem; line-height:1.4; }
+.orbit-theme .orbit-confirmation [data-slot=alert-dialog-description] { font-size:.9375rem; line-height:1.7; color:#b9cedd; overflow-wrap:anywhere; }
+.orbit-theme .orbit-confirmation [data-slot=alert-dialog-header] { text-align:left; place-items:start; gap:12px; }
+.orbit-theme .orbit-confirmation [data-slot=alert-dialog-footer] { margin-top:8px; flex-wrap:wrap; }
+.orbit-theme :is(input,textarea,select)[aria-invalid=true] { border-color:var(--rose); }
+.orbit-theme :is(.mapping-grid small,.hash-line code,.evidence-record p,.detail-facts dd) { overflow-wrap:anywhere; }
+.orbit-theme .maintenance-memory .inline-filters label { min-width:0; }
+.orbit-theme .workspace-unavailable { padding:24px; margin:24px 0; max-width:720px; }
+.orbit-theme .workspace-unavailable h2 { font-size:1.4rem; margin:8px 0 16px; }
+.orbit-theme .workspace-unavailable p { font-size:1rem; color:var(--dim); line-height:1.7; margin-bottom:24px; }
+.orbit-theme .fleet-profile-warning { font-size:.875rem; color:#efd5a6; line-height:1.7; padding:12px; border-left:2px solid var(--amber); background:#302b2055; border-radius:0 8px 8px 0; }
+
+@media(max-width:960px) {
+ .orbit-theme .journal-additional-filters { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:700px) {
+ .orbit-theme .journal-filters { grid-template-columns:repeat(2,minmax(0,1fr)); padding:20px 16px; }
+ .orbit-theme .journal-quick { grid-column:1/-1; }
+ .orbit-theme .journal-filter-actions { gap:12px; }
+ .orbit-theme .journal-filter-actions>.primary-action { width:100%; }
+ .orbit-theme .export-progress>.text-action { margin-left:0; }
+ .orbit-theme .comparison-changes>div { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; }
+ .orbit-theme .comparison-changes strong { grid-column:1/-1; }
+ .orbit-theme .import-review>.section-title>.action-row { width:100%; }
+ .orbit-theme .maintenance-memory .inline-filters { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); padding:16px 0; }
+ .orbit-theme .maintenance-memory .inline-filters label:nth-child(2) { grid-column:1/-1; }
+ .orbit-theme .orbit-confirmation [data-slot=alert-dialog-footer] { flex-direction:column-reverse; }
+ .orbit-theme .orbit-confirmation [data-slot=alert-dialog-footer]>button { width:100%; }
+}
+@media(max-width:380px) {
+ .orbit-theme .journal-filters,.orbit-theme .journal-additional-filters,.orbit-theme .maintenance-memory .inline-filters { grid-template-columns:minmax(0,1fr); }
+ .orbit-theme .journal-quick,.orbit-theme .maintenance-memory .inline-filters label:nth-child(2) { grid-column:auto; }
+}

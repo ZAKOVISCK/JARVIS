@@ -1,0 +1,391 @@
+/* Órbita design system. Geometry and semantic states are shared by all five routes. */
+.orbit-theme { color-scheme:dark; }
+.orbit-theme .cognitive-os { background:radial-gradient(ellipse at 50% 34%,#05355536,transparent 64%),var(--background); }
+.orbit-theme .os-header {
+ position:sticky; top:0; z-index:30; max-width:none; min-height:88px; height:auto;
+ display:grid; grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr);
+ gap:20px; padding:12px max(24px,calc((100vw - 1920px)/2));
+ background:#02111ff5; border-bottom:1px solid #19506999; backdrop-filter:blur(12px);
+}
+.orbit-theme .os-brand { gap:12px; min-width:0; justify-content:flex-start; }
+.orbit-theme .os-utilities { display:flex; align-items:center; justify-content:flex-end; justify-self:end; gap:12px; min-width:0; }
+.orbit-theme .brand-symbol { border:0; background:none; width:44px; height:44px; border-radius:50%; }
+.orbit-theme .brand-symbol img { width:44px; height:44px; object-fit:contain; }
+.orbit-theme .os-brand b { font-size:1.45rem; letter-spacing:.16em; font-weight:600; }
+.orbit-theme .os-brand small { font-size:.75rem; letter-spacing:.015em; color:#9cb6ca; }
+.orbit-theme .os-navigation {
+ position:static; inset:auto; transform:none; display:flex; align-self:center; align-items:center;
+ padding:4px; gap:4px; min-height:64px; width:auto; height:auto;
+ border:1px solid #1a4d65; border-radius:var(--orbit-pill); background:linear-gradient(160deg,#092136aa,#041a2a99);
+ box-shadow:inset 0 1px 0 #d6efff08;
+}
+.orbit-theme .os-navigation a {
+ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+ min-height:56px; min-width:78px; padding:8px 12px; font-size:.875rem; border-radius:12px;
+ color:#b1c8da; background:transparent; text-decoration:none; position:relative;
+ border:1px solid transparent;
+}
+.orbit-theme .os-navigation a[aria-current=page] { color:#e2faff; background:var(--orbit-control-active); border-color:var(--orbit-selected-edge); box-shadow:inset 0 -2px 0 #65d6e9; }
+.orbit-theme .os-navigation a[aria-current=page]:after { display:none; }
+.orbit-theme .os-navigation a:hover { background:var(--orbit-control-hover); color:#e4f6ff; }
+.orbit-theme .os-navigation a[aria-current=page]:hover { background:var(--orbit-control-active); }
+.orbit-theme .header-base { display:flex; align-items:center; gap:20px; padding-inline:16px; border-inline:1px solid #195069; }
+.orbit-theme .header-base>span { display:flex; align-items:center; gap:12px; }
+.orbit-theme .header-base svg { color:var(--cyan); stroke-width:1.5; }
+.orbit-theme .header-base>span>span { display:grid; gap:3px; }
+.orbit-theme .header-base b { font-size:1rem; font-weight:600; font-variant-numeric:tabular-nums; }
+.orbit-theme .header-base small { font-size:.8125rem; color:var(--dim); }
+.orbit-theme .base-ready,.orbit-theme .base-loading { width:6px; height:6px; flex-shrink:0; border-radius:50%; background:#7dccb1; }
+.orbit-theme .base-loading { background:#e4c089; }
+.orbit-theme .global-command { margin:0; }
+.orbit-theme .global-command span { font-size:.875rem; }
+.orbit-theme .is-central .global-command span { display:none; }
+.orbit-theme .header-status { gap:0; margin-left:0; }
+.orbit-theme .header-status button { width:44px; }
+.orbit-theme .os-main { max-width:1920px; padding:0 24px 32px; min-width:0; }
+.orbit-theme .context-bar { padding:20px 0 28px; font-size:.8125rem; }
+.orbit-theme .context-bar small { font-size:.75rem; }
+.orbit-theme .is-central .context-bar { display:none; }
+.orbit-theme .is-central .os-main { padding-top:16px; }
+.orbit-theme .os-footer { max-width:1920px; font-size:.8125rem; border-color:#19475f80; padding:20px 24px; }
+.orbit-theme .eyebrow { font-size:.8125rem; letter-spacing:.045em; }
+.orbit-theme .workspace-heading h1,.orbit-theme .investigation-heading h1,.orbit-theme .fleet-heading h1 { font-weight:550; font-size:clamp(1.5rem,2.1vw,2rem); letter-spacing:-.025em; }
+.orbit-theme .box-heading>span { font-family:inherit; font-size:.875rem; letter-spacing:.035em; }
+.orbit-theme .workspace-heading { margin-bottom:24px; }
+.orbit-theme :is(.orbit-surface,.surface,.glass,.research-composer,.investigation-answer,.investigation-command,.fleet-inspector,.fleet-filters,.journal-filters,.mapping-panel,.import-review,.maintenance-memory,.admin-audit) {
+ background:var(--orbit-surface); border:1px solid var(--border); border-radius:var(--orbit-radius); box-shadow:var(--orbit-shadow); min-width:0;
+}
+.orbit-theme .orbit-surface { position:relative; }
+
+/* Shallow optical capsules. No white focus ring, numbered tiles or heavy bevel. */
+.orbit-theme :is(
+ [data-slot=button],.action-primary,.action-secondary,.primary-action,.text-action,.global-command,.header-status button,
+ .scene-base-toggle,.scene-primary,.scene-link,.scene-view-option,.scene-hotspot,.scene-system-list button,
+ .command-send,.command-tools button,.research-tabs button,.history-section-tabs button,.view-switch button,
+ .fleet-primary,.fleet-secondary,.fleet-view button,.fleet-systems button,.fleet-detail-tabs [data-slot=tabs-trigger],
+ .system-hotspots button,.investigation-systems button,.result-flags button,.page-controls button,.row-actions button,
+ .review-actions button,.comparison-bar button,.journal-pagination button,.import-origin>button,
+ .command-surface button:not([class]),.research-error button
+) {
+ min-height:44px; border:1px solid var(--orbit-edge); border-radius:var(--orbit-pill);
+ background:var(--orbit-control); color:#d8e8f4; box-shadow:inset 0 1px 0 #d4edff08;
+ padding:10px 16px; font-size:.875rem; font-weight:500;
+ transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,color .16s ease;
+}
+.orbit-theme :is(.action-primary,.primary-action,.scene-primary,.fleet-primary,.command-send) {
+ background:var(--orbit-control-active); border-color:var(--orbit-selected-edge);
+ color:#e6faff!important; box-shadow:inset 0 -2px 0 #62d7e7,inset 0 1px 0 #a8e5ff12;
+}
+.orbit-theme :is(.action-primary,.primary-action,.scene-primary,.fleet-primary,.command-send):hover:not(:disabled) { background:linear-gradient(160deg,#246b8a,#154766 65%,#123b54); }
+.orbit-theme [data-slot=button][data-variant=default] { background:var(--orbit-control-active); border-color:var(--orbit-selected-edge); color:#e6faff; box-shadow:inset 0 -2px 0 #62d7e7; }
+.orbit-theme [data-slot=button][data-variant=destructive] { background:#48272e; border-color:#a26371; color:#ffe0e6; }
+.orbit-theme [data-slot=button][data-variant=destructive]:hover:not(:disabled) { background:#61313c; }
+.orbit-theme [data-slot=button][data-size^=icon] { width:44px; min-width:44px; height:44px; padding:0; }
+.orbit-theme :is(.text-action,.action-secondary,.global-command,.header-status button,.scene-link,.scene-view-option,.scene-base-toggle,.scene-hotspot,.scene-system-list button,.command-tools button,.fleet-secondary,.system-hotspots button,.investigation-systems button,.fleet-systems button):hover:not(:disabled) {
+ background:var(--orbit-control-hover); border-color:#577e96; color:#e5f7ff;
+}
+.orbit-theme :is(.scene-hotspot,.scene-system-list button,.command-tools button,.view-switch button,.fleet-view button,.system-hotspots button,.investigation-systems button,.fleet-systems button)[aria-pressed=true],
+.orbit-theme :is(.research-tabs button,.history-section-tabs button,.fleet-detail-tabs [data-slot=tabs-trigger])[data-state=active] {
+ background:var(--orbit-control-active); border-color:var(--orbit-selected-edge); color:#e4faff;
+ box-shadow:inset 0 -2px 0 #65d6e9,inset 0 1px 0 #a8e5ff0e;
+}
+.orbit-theme :is(.research-tabs,.history-section-tabs,.fleet-view,.view-switch) { border:1px solid #29485d; border-radius:var(--orbit-pill); padding:5px; gap:5px; background:#0b1929; height:auto; flex-wrap:wrap; }
+.orbit-theme :is(.research-tabs,.history-section-tabs) button { flex:1; min-height:44px; padding:9px 12px; white-space:normal; }
+.orbit-theme :is(.research-tabs button,.history-section-tabs button,.fleet-detail-tabs [data-slot=tabs-trigger],.fleet-primary):after { display:none; }
+.orbit-theme :is(.view-switch,.fleet-view) button { padding:9px 14px; }
+.orbit-theme .fleet-detail-tabs [data-slot=tabs-list] { height:auto; min-height:56px; padding:5px; border:1px solid var(--border); border-radius:var(--orbit-pill); background:#0b1929; gap:5px; margin-bottom:20px; }
+.orbit-theme .fleet-detail-tabs [data-slot=tabs-trigger] { flex:1; padding:8px 12px; }
+.orbit-theme .scene-hotspot { padding:9px 14px; font-size:.875rem; border-radius:12px; background:#041b2bea; border-color:#2597b2; box-shadow:none; }
+.orbit-theme .scene-view-option { padding:8px 12px; }
+.orbit-theme .scene-neighbor-heading>.scene-link { padding:6px 12px; font-size:.8125rem; }
+.orbit-theme .fleet-systems button { min-height:68px; border-radius:12px; justify-content:flex-start; text-align:left; padding:12px 16px; }
+.orbit-theme .fleet-systems button>span { min-width:0; overflow-wrap:anywhere; }
+.orbit-theme :is(.row-actions button,.comparison-bar>div>button:last-child) { padding:0; width:44px; height:44px; }
+.orbit-theme .text-action>svg:last-child:not(:first-child) { display:none; }
+.orbit-theme .scene-system-list button { padding:12px; justify-content:flex-start; border:0; border-bottom:1px solid #19475f80; border-radius:0; background:transparent; box-shadow:none; font-size:.9375rem; min-height:52px; }
+.orbit-theme .scene-system-list button:last-child { border-bottom:0; }
+.orbit-theme .scene-system-list button[aria-pressed=true] { background:linear-gradient(90deg,#0b465dcc,#06283bc4); border:1px solid #29b8d2; border-radius:12px; box-shadow:none; }
+.orbit-theme .scene-system-list button:hover:not(:disabled) { background:#09344899; }
+.orbit-theme :is(.scene-base-toggle,.scene-link,.scene-view-option) { border-color:transparent; background:transparent; box-shadow:none; }
+.orbit-theme :is(.scene-base-toggle,.scene-link,.scene-view-option):hover:not(:disabled) { border-color:transparent; background:#0b314680; }
+.orbit-theme .scene-context-actions>button { width:100%; }
+.orbit-theme .scene-vehicle { background:transparent; border:0; box-shadow:none; border-radius:12px; }
+.orbit-theme .scene-vehicle:hover { color:var(--cyan); }
+.orbit-theme button:disabled { opacity:.48; cursor:not-allowed; box-shadow:none; }
+.orbit-theme :is(button,a,input,select,textarea,summary,[tabindex]):focus-visible {
+ outline:2px solid transparent!important; outline-offset:3px;
+ box-shadow:-3px 0 0 #7de4f1,3px 0 0 #7de4f1!important;
+}
+.orbit-theme :is(input,textarea,select,[data-slot=select-trigger],[data-slot=input-group]):focus-visible {
+ box-shadow:inset 0 -2px 0 #7de4f1!important; border-color:#4d91a9;
+}
+.orbit-theme [data-slot=input-group]:focus-within { box-shadow:inset 0 -2px 0 #7de4f1!important; border-color:#4d91a9!important; }
+.orbit-theme .os-main:focus-visible { box-shadow:none!important; }
+.orbit-theme label:focus-within { outline:none!important; }
+.orbit-theme :is(input:not([type=checkbox]),textarea,select,[data-slot=input],[data-slot=textarea],[data-slot=select-trigger],[data-slot=input-group]) {
+ border-color:var(--input); border-radius:16px; background:#081929; color:var(--ink); min-height:46px; box-shadow:none; font-size:1rem;
+}
+.orbit-theme textarea { padding:14px 16px; line-height:1.75; }
+.orbit-theme .research-options :is(select,[data-slot=select-trigger]) { font-size:.875rem; }
+.orbit-theme :is(input,textarea,select,[data-slot=select-trigger])[aria-invalid=true] { border-color:#d58a94; }
+.orbit-theme :is(.research-field,.journal-filters label,.fleet-filters label)>span { font-size:.875rem; }
+.orbit-theme :is(.research-select-menu,.catalog-combobox-content) {
+ background:#102538!important; border:1px solid #42677e!important; border-radius:20px!important;
+ box-shadow:0 16px 40px #00000055!important; color:var(--ink); padding:6px; isolation:isolate;
+}
+.orbit-theme :is(.research-select-menu,.catalog-combobox-content) :is([data-slot=select-item],[data-slot=combobox-item]) { font-size:.875rem; min-height:44px; padding:10px 14px; border-radius:12px!important; }
+.orbit-theme :is(.research-select-menu,.catalog-combobox-content) [data-highlighted] { background:#1b455e!important; color:#e8faff!important; outline:0!important; box-shadow:inset 3px 0 0 #78dbea!important; }
+.orbit-theme :is(.catalog-combobox-content,.research-select-menu) [data-slot=scroll-area-scrollbar] { background:transparent; }
+.orbit-theme .searchline,.orbit-theme .fleet-search { background:#0a1b2b; border-color:var(--input); border-radius:var(--orbit-pill); }
+.orbit-theme .searchline input,.orbit-theme .fleet-search input { background:transparent; border:0; border-radius:0; }
+.orbit-theme .input-with-icon input { padding-left:40px; }
+.orbit-theme .validation-badge { border-radius:var(--orbit-pill); padding:6px 10px; font-size:.875rem; }
+.orbit-theme .entity-criteria span { border-radius:var(--orbit-pill); border:1px solid #315e73; background:#113146; color:#d2edf7; padding:8px 12px; font-size:.875rem; }
+.orbit-theme .research-table-wrap { border-radius:12px; background:#0a1b2a; border-color:#2a4357; }
+.orbit-theme .research-table th { background:#10273a; font-size:.8125rem; }
+.orbit-theme .research-table td { border-color:#25405280; }
+.orbit-theme .record-title,.orbit-theme .memory-title { color:var(--ink); border-radius:12px; background:transparent; box-shadow:none; }
+.orbit-theme .research-workspace .result-metrics { border-radius:16px; background:#0b1d2c; border-color:var(--border); padding:6px; gap:6px; }
+.orbit-theme .research-workspace .result-metrics>button { border-radius:12px; padding:16px; min-width:130px; font-size:.875rem; }
+.orbit-theme .research-workspace .result-metrics>button[aria-pressed=true] { background:#163c52; box-shadow:inset 0 -2px 0 #61d8e5; }
+.orbit-theme .research-workspace .result-metrics>button:after { display:none; }
+.orbit-theme .confidence { border-radius:16px; border-left-width:2px; padding:16px; }
+.orbit-theme .operation-notice,.orbit-theme .research-error,.orbit-theme .offline-banner { border-radius:12px; }
+
+/* Persistent multimodal entry without oversized controls. */
+.orbit-theme .command-surface {
+ background:linear-gradient(160deg,#112a40,#091b2d); border:1px solid #365f78; border-radius:16px;
+ padding:10px 14px; box-shadow:var(--orbit-shadow); margin:0; min-width:0;
+}
+.orbit-theme .command-surface form { padding:0; gap:12px; min-width:0; }
+.orbit-theme .command-surface input { min-width:0; width:100%; min-height:52px; font-size:1rem; border:0; border-radius:12px; background:transparent; padding:10px 6px; }
+.orbit-theme .command-mark { width:34px; height:34px; border-color:#458099; font-family:inherit; color:var(--cyan); }
+.orbit-theme .command-send { width:44px; height:44px; padding:0; flex-shrink:0; }
+.orbit-theme .command-tools { border-color:#36546a80; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:8px; padding-top:10px; }
+.orbit-theme .command-tools button { min-height:44px; padding:8px 14px; gap:8px; }
+.orbit-theme .command-tools button>svg { width:17px; height:17px; }
+.orbit-theme .command-tools>span { font-size:.8125rem; }
+.orbit-theme .command-inline { border-radius:var(--orbit-pill); padding:8px 12px; background:linear-gradient(120deg,#06304b80,#041e34c9); border-color:#217995; }
+.orbit-theme .command-inline form { display:flex; align-items:center; gap:10px; min-height:48px; }
+.orbit-theme .command-inline .command-mark { width:44px; height:44px; border:1px solid #176783; background:#062c4270; }
+.orbit-theme .command-inline input { flex:1; min-width:0; min-height:48px; padding:10px 12px; font-size:1rem; }
+.orbit-theme .command-inline .command-tools { flex:none; flex-wrap:nowrap; gap:2px; margin:0; padding:0 8px; border:0; border-left:1px solid #1a4c64; }
+.orbit-theme .command-inline .command-tools button { width:44px; height:44px; flex:none; padding:0; gap:0; border-color:transparent; background:transparent; box-shadow:none; }
+.orbit-theme .command-inline .command-tools button>span { display:none; }
+.orbit-theme .command-inline .command-tools button>svg { width:20px; height:20px; color:#86d4eb; stroke-width:1.5; }
+.orbit-theme .command-inline .command-tools button:hover:not(:disabled) { background:#104661; }
+.orbit-theme .command-inline .command-tools button[aria-pressed=true] { background:#174b62; border-color:#54c4d7; }
+.orbit-theme .command-inline .command-send { width:44px; height:44px; border:1px solid #41ddf0; color:#021522!important; background:#35cee5; box-shadow:none; }
+.orbit-theme .command-inline .command-send:hover:not(:disabled) { background:#6edfec; }
+.orbit-theme .command-inline>p { margin:8px 12px 4px; padding:0; font-size:.875rem; line-height:1.65; }
+.orbit-theme .investigation-command>.eyebrow { margin-bottom:16px; }
+.orbit-theme .investigation-command .command-surface { background:transparent; box-shadow:none; border:0; padding:0; }
+
+/* Fleet constellation and identity inspector share the same surface language. */
+.orbit-theme .fleet-layout { grid-template-columns:minmax(0,1.7fr) minmax(340px,1fr); gap:24px; }
+.orbit-theme .fleet-spatial { gap:20px; }
+.orbit-theme .fleet-constellation { border:1px solid var(--border); border-radius:16px; background:radial-gradient(ellipse at 50% 50%,#11394c50,transparent 70%),#081827; }
+.orbit-theme .fleet-groups { gap:10px; }
+.orbit-theme .fleet-locate,.orbit-theme .fleet-constellation>footer button { border:1px solid var(--orbit-edge); border-radius:var(--orbit-pill); background:var(--orbit-control); min-height:44px; }
+.orbit-theme .fleet-constellation>footer button { padding:9px 14px; }
+.orbit-theme .fleet-groups button { border:0; border-bottom:1px solid #214457; border-radius:0; background:transparent; box-shadow:none; }
+.orbit-theme .fleet-groups button[aria-pressed=true] { border:1px solid #32a8c3; border-radius:12px; background:#0a354ccc; box-shadow:none; }
+.orbit-theme .fleet-node { border-radius:var(--orbit-pill); border:1px solid #31536b; background:linear-gradient(150deg,#1c354b,#0d2538); color:#c7e4f3; font-size:.8125rem; }
+.orbit-theme .fleet-node[aria-pressed=true] { background:#174865; border-color:#74cde0; box-shadow:inset 0 -2px #69dced; }
+.orbit-theme .fleet-node:focus-visible { outline:2px solid #77e4f0!important; outline-offset:2px; box-shadow:none!important; }
+.orbit-theme .fleet-inspector { padding:24px; }
+.orbit-theme .fleet-detail-sheet .fleet-inspector { padding:0; border:0; background:transparent; box-shadow:none; }
+.orbit-theme .fleet-inspector .vehicle-visual-frame { border-radius:12px; background:#081521; padding:8px; aspect-ratio:728/421; }
+.orbit-theme .vehicle-visual-frame img { width:100%; height:100%; object-fit:contain; filter:none; }
+.orbit-theme .vehicle-visual figcaption { font-size:.8125rem; padding-top:12px; }
+.orbit-theme .fleet-identity h2 { font-weight:550; font-size:2rem; }
+.orbit-theme .fleet-vehicle-signals dd { font-size:1.25rem; }
+.orbit-theme .fleet-list { border:1px solid var(--border); border-radius:16px; background:#091c2c; }
+.orbit-theme .fleet-list-vehicle { background:#0a1e2d; padding:18px; border-radius:0; }
+.orbit-theme .fleet-list-vehicle[aria-pressed=true] { background:#123b52; border-left:3px solid #6bd9e9; }
+.orbit-theme .fleet-peers button { border-radius:12px; padding:14px; }
+.orbit-theme .fleet-source-note { font-size:.8125rem; line-height:1.75; }
+.orbit-theme .fleet-vehicle-signals { border-color:#2b485e; }
+.orbit-theme .fleet-filter-count { border-radius:var(--orbit-pill); }
+
+/* Supervised integration: stage geometry corresponds to actual workflow state. */
+.orbit-theme .import-pipeline { position:relative; border:1px solid var(--border); border-radius:var(--orbit-radius); padding:12px 16px; gap:12px; background:#06253b70; margin-bottom:24px; flex-wrap:wrap; }
+.orbit-theme .import-pipeline li { min-width:150px; flex:1; border:0; padding:10px 8px; font-size:.875rem; min-height:56px; position:relative; }
+.orbit-theme .import-pipeline li>span { width:34px; height:34px; background:#0a1828; border:1px solid #4c7289; font-family:inherit; font-size:.875rem; font-weight:500; }
+.orbit-theme .import-pipeline .current { color:#dcf7ff; }
+.orbit-theme .import-pipeline .current>span { border-color:#73dbe9; background:#194b66; color:#dffaff; box-shadow:inset 0 -2px #65d8e8; }
+.orbit-theme .import-pipeline .done>span { color:#b6f1d8; border-color:#569d85; background:#133b32; }
+.orbit-theme .import-origin { border:1px dashed #507c95; border-radius:16px; padding:32px; background:radial-gradient(ellipse at 0 0,#143b524d,transparent 72%),#0b1c2d; gap:24px; }
+.orbit-theme .import-origin h2 { font-size:1.5rem; }
+.orbit-theme .mapping-panel,.orbit-theme .import-review { padding:28px; }
+.orbit-theme .mapping-grid { gap:24px; }
+.orbit-theme .mapping-grid label { font-size:.875rem; }
+.orbit-theme .mapping-grid small { font-size:.8125rem; line-height:1.65; }
+.orbit-theme .mapping-grid select { width:100%; }
+.orbit-theme .import-balances,.orbit-theme .movement-grid,.orbit-theme .admin-metrics { gap:16px 24px; border-color:#345169; }
+.orbit-theme .import-balances b,.orbit-theme .movement-grid b,.orbit-theme .admin-metrics b { font-family:inherit; font-size:1.5rem; font-weight:550; }
+.orbit-theme .import-balances>span,.orbit-theme .movement-grid>span,.orbit-theme .admin-metrics>span { font-size:.875rem; }
+.orbit-theme .staged-rows article { border-radius:12px; background:#0a1c2b; padding:20px; }
+.orbit-theme .approval-gate { border:1px solid #458776; border-radius:12px; background:#123c3438; padding:24px; }
+.orbit-theme .approval-gate label { font-size:.9375rem; }
+.orbit-theme .import-version { border-radius:12px; border:1px solid #2b4659; background:#0d2030; padding:18px 20px; margin:12px 0; }
+.orbit-theme .import-version:hover { background:#15354a; }
+.orbit-theme .hash-line code { font-size:.8125rem; }
+
+/* Temporal memory: preserved snapshots and current evidence stay distinct. */
+.orbit-theme .memory-event { grid-template-columns:140px minmax(0,1fr); gap:24px; margin-bottom:28px; }
+.orbit-theme .memory-when { border-color:#655489; position:relative; padding-top:20px; }
+.orbit-theme .memory-when:after { content:''; position:absolute; top:24px; right:-4px; width:7px; height:7px; border-radius:50%; background:#baa6ec; }
+.orbit-theme .memory-snapshot { border:1px solid #514363; border-radius:16px; padding:24px; background:linear-gradient(155deg,#171e3480,#081d2dad 58%); box-shadow:var(--orbit-shadow); }
+.orbit-theme .memory-snapshot>header { align-items:center; }
+.orbit-theme .memory-snapshot>header>button:last-child { width:44px; height:44px; border:1px solid #71658e; background:#252e49; border-radius:var(--orbit-pill); }
+.orbit-theme .memory-title h3 { font-size:1.2rem; font-weight:550; }
+.orbit-theme .memory-title>span { font-family:inherit; font-size:1rem; }
+.orbit-theme .memory-tracks { gap:16px; }
+.orbit-theme .memory-tracks button { padding:16px; border:1px solid #38465b; background:#06203580; border-radius:12px; }
+.orbit-theme .memory-tracks button:last-child { border:1px solid #38465b; }
+.orbit-theme .memory-tracks span,.orbit-theme .memory-tracks small { font-size:.875rem; }
+.orbit-theme .memory-snapshot footer { font-size:.8125rem; flex-wrap:wrap; }
+.orbit-theme .timeline-card { border-radius:16px; padding:24px; }
+.orbit-theme .time-icon { border-radius:var(--orbit-pill); }
+.orbit-theme .change-query { color:#d0bdf1; }
+.orbit-theme .current-comparison { border-radius:12px; border-color:#766397; background:#241e3944; }
+.orbit-theme .query-journal .journal-filters { border-radius:16px; }
+.orbit-theme .query-detail-sheet,.orbit-theme .filter-sheet {
+ background:#0c1c2cfb!important; border-color:#38566b!important; border-radius:28px 0 0 28px;
+ box-shadow:-16px 0 48px #0000004d!important; max-width:100vw!important;
+}
+.orbit-theme .query-detail-sheet [data-slot=sheet-header],.orbit-theme .filter-sheet [data-slot=sheet-header] { padding:28px 64px 24px 28px; }
+.orbit-theme .query-detail-sheet [data-slot=sheet-title] { font-weight:550; font-size:1.4rem; }
+.orbit-theme .query-detail-sheet [data-slot=sheet-description] { font-size:.875rem; }
+.orbit-theme :is(.query-detail-sheet,.filter-sheet) [data-slot=sheet-title] { overflow-wrap:anywhere; }
+.orbit-theme .query-detail-sheet>button,.orbit-theme .filter-sheet>button.absolute { width:44px; min-height:44px; border-radius:var(--orbit-pill); border:1px solid #3b5a70; background:var(--orbit-control); color:#d7eaf6; opacity:1; }
+.orbit-theme .query-detail-body { padding:24px 28px 40px; }
+.orbit-theme .query-detail-body .evidence-record { border-radius:12px; background:#102839; padding:18px; margin-bottom:12px; }
+.orbit-theme .evidence-record small { font-size:.8125rem; }
+.orbit-theme .review-form { border-radius:12px; }
+
+@media(max-width:1350px) {
+ .orbit-theme .os-header { grid-template-columns:minmax(150px,1fr) auto minmax(150px,1fr); padding:14px 24px; gap:12px; }
+ .orbit-theme .header-base { display:none; }
+ .orbit-theme .os-navigation a { padding:10px 13px; }
+ .orbit-theme .global-command span { display:none; }
+ .orbit-theme .fleet-layout { grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr); }
+}
+@media(max-width:1150px) {
+ .orbit-theme .fleet-layout { grid-template-columns:minmax(0,1fr); }
+ .orbit-theme .os-brand small { display:none; }
+ .orbit-theme .os-main { padding-inline:24px; }
+ .orbit-theme .os-navigation a { padding:9px 11px; font-size:.875rem; }
+ .orbit-theme .fleet-inspector { padding:24px; }
+ .orbit-theme .import-pipeline li { min-width:160px; }
+}
+@media(max-width:960px) {
+ .orbit-theme .os-header { grid-template-columns:minmax(0,1fr) auto; }
+ .orbit-theme .os-navigation { position:fixed; inset:auto 12px calc(10px + env(safe-area-inset-bottom)); display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); z-index:35; min-height:76px; padding:6px; gap:4px; background:#0c1b2ef5; backdrop-filter:blur(16px); border-radius:30px; width:auto; box-shadow:0 8px 28px #00000045; }
+ .orbit-theme .os-navigation a { flex-direction:column; min-width:0; min-height:62px; font-size:.8125rem; padding:8px 4px; gap:5px; border-radius:16px; line-height:1.2; }
+ .orbit-theme .os-navigation a>svg { width:20px; height:20px; }
+ .orbit-theme .os-main { padding-bottom:112px; }
+ .orbit-theme .os-footer { padding:24px; margin:0 0 calc(100px + env(safe-area-inset-bottom)); }
+ .orbit-theme .header-status { display:flex; }
+ .orbit-theme .os-brand small { display:block; font-size:.75rem; }
+ .orbit-theme .query-detail-sheet,.orbit-theme .filter-sheet { width:min(700px,100vw)!important; max-width:100vw!important; }
+ .orbit-theme .memory-event { grid-template-columns:116px minmax(0,1fr); gap:20px; }
+}
+@media(max-width:760px) {
+ .orbit-theme .os-header { min-height:72px; padding:12px 18px; gap:10px; }
+ .orbit-theme .os-utilities { gap:8px; }
+ .orbit-theme .os-brand b { font-size:1rem; letter-spacing:.12em; }
+ .orbit-theme .os-brand small { font-size:.75rem; max-width:155px; line-height:1.4; }
+ .orbit-theme .brand-symbol,.orbit-theme .brand-symbol img { width:36px; height:36px; }
+ .orbit-theme .global-command,.orbit-theme .header-status button { width:44px; padding:0; }
+ .orbit-theme .os-main { padding-inline:16px; padding-bottom:104px; }
+ .orbit-theme .is-central .os-main { padding-top:20px; }
+ .orbit-theme .context-bar { padding:18px 0 24px; }
+ .orbit-theme .context-bar small { display:none; }
+ .orbit-theme .os-footer { display:grid; gap:8px; padding:20px 16px; }
+ .orbit-theme .workspace-heading,.orbit-theme .fleet-heading { margin-bottom:20px; }
+ .orbit-theme .workspace-heading h1,.orbit-theme .investigation-heading h1,.orbit-theme .fleet-heading h1 { font-size:1.5rem; line-height:1.35; }
+ .orbit-theme .workspace-heading>.text-action { margin-top:14px; }
+ .orbit-theme :is(.surface,.research-composer,.investigation-answer,.fleet-inspector,.fleet-filters,.journal-filters,.mapping-panel,.import-review,.maintenance-memory,.admin-audit) { border-radius:16px; padding:20px; }
+ .orbit-theme .command-surface { padding:10px; border-radius:16px; }
+ .orbit-theme .command-surface form { gap:8px; }
+ .orbit-theme .command-surface input { font-size:1rem; padding:8px 4px; min-height:48px; }
+ .orbit-theme .command-tools { gap:6px; }
+ .orbit-theme .command-tools button { flex:1; padding:8px; font-size:.875rem; gap:6px; }
+ .orbit-theme .command-tools>span { width:100%; margin-left:0; }
+ .orbit-theme .command-inline { border-radius:16px; padding:10px; }
+ .orbit-theme .command-inline form { display:grid; grid-template-columns:28px minmax(0,1fr) 44px; gap:8px; }
+ .orbit-theme .command-inline .command-mark { width:28px; height:28px; border:0; background:transparent; }
+ .orbit-theme .command-inline input { grid-column:2; grid-row:1; padding:8px 4px; min-height:48px; }
+ .orbit-theme .command-inline .command-send { grid-column:3; grid-row:1; }
+ .orbit-theme .command-inline .command-tools { grid-column:1/-1; grid-row:2; display:flex; align-items:center; justify-content:space-around; border:0; border-top:1px solid #1b4a6380; padding:8px 0 0; margin:0; gap:4px; }
+ .orbit-theme .command-inline .command-tools button { width:44px; height:44px; min-height:44px; flex:none; flex-direction:row; padding:0; font-size:.875rem; }
+ .orbit-theme .command-inline .command-tools button>span { display:none; }
+ .orbit-theme .research-options :is(select,[data-slot=select-trigger]) { font-size:.875rem; }
+ .orbit-theme .fleet-filters label { font-size:.875rem; }
+ .orbit-theme .fleet-inspector .vehicle-visual-frame { padding:6px; }
+ .orbit-theme .fleet-detail-tabs [data-slot=tabs-list] { border-radius:16px; }
+ .orbit-theme .fleet-detail-tabs [data-slot=tabs-trigger] { padding:8px; font-size:.875rem; }
+ .orbit-theme .fleet-systems button { padding:12px; min-height:68px; border-radius:12px; }
+ .orbit-theme .fleet-list-vehicle { padding:16px 12px; }
+ .orbit-theme .import-pipeline { padding:12px; gap:6px; border-radius:16px; }
+ .orbit-theme .import-pipeline li { min-width:calc(50% - 6px); font-size:.875rem; padding:8px 4px; }
+ .orbit-theme .import-origin { padding:24px 20px; display:grid; grid-template-columns:40px minmax(0,1fr); gap:12px 16px; }
+ .orbit-theme .import-origin>button { grid-column:1/-1; width:100%; margin:8px 0 0; }
+ .orbit-theme .import-origin h2 { font-size:1.2rem; }
+ .orbit-theme .mapping-grid { grid-template-columns:minmax(0,1fr); gap:20px; }
+ .orbit-theme .action-row,.orbit-theme .review-actions { gap:10px; }
+ .orbit-theme .review-row-toolbar { flex-wrap:wrap; }
+ .orbit-theme .review-row-toolbar label { min-width:0; max-width:100%; }
+ .orbit-theme .import-version { gap:16px; flex-wrap:wrap; }
+ .orbit-theme .import-version small { font-size:.8125rem; }
+ .orbit-theme .memory-event { display:block; margin-bottom:24px; }
+ .orbit-theme .memory-when { display:flex; flex-direction:row; align-items:center; gap:12px; border:0; padding:0 0 12px; font-size:.875rem; }
+ .orbit-theme .memory-when:after { display:none; }
+ .orbit-theme .memory-snapshot { border-radius:16px; padding:20px; }
+ .orbit-theme .memory-tracks { grid-template-columns:minmax(0,1fr); gap:12px; }
+ .orbit-theme .memory-snapshot footer { flex-direction:column; align-items:flex-start; gap:12px; }
+ .orbit-theme .memory-snapshot footer>.text-action { width:100%; }
+ .orbit-theme .memory-switch { width:100%; border-radius:16px; }
+ .orbit-theme .memory-switch button { flex:1; white-space:normal; }
+ .orbit-theme .comparison-bar { border-radius:12px; flex-wrap:wrap; }
+ .orbit-theme .comparison-grid { grid-template-columns:minmax(0,1fr); gap:24px; }
+ .orbit-theme .comparison-grid article+article { border-left:0; border-top:1px solid var(--border); padding:24px 0 0; }
+ .orbit-theme .query-detail-sheet,.orbit-theme .filter-sheet { inset:auto 0 0!important; width:100%!important; height:min(88svh,960px)!important; border-radius:28px 28px 0 0; border:1px solid #38566b!important; padding-bottom:env(safe-area-inset-bottom)!important; }
+ .orbit-theme :is(.query-detail-sheet,.filter-sheet)[data-state=open] { animation:orbit-sheet-in .18s ease-out; }
+ .orbit-theme :is(.query-detail-sheet,.filter-sheet)[data-state=closed] { animation:orbit-sheet-out .16s ease-in; }
+ .orbit-theme .query-detail-sheet [data-slot=sheet-header],.orbit-theme .filter-sheet [data-slot=sheet-header] { padding:24px 62px 20px 20px; }
+ .orbit-theme .query-detail-body { padding:20px 20px 32px; }
+ .orbit-theme .query-detail-sheet [data-slot=sheet-title] { font-size:1.3rem; line-height:1.4; }
+ .orbit-theme .query-detail-sheet [data-slot=sheet-description] { font-size:.875rem; }
+}
+@keyframes orbit-sheet-in { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+@keyframes orbit-sheet-out { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(24px); } }
+@media(max-width:380px) {
+ .orbit-theme .os-header { padding-inline:12px; gap:6px; }
+ .orbit-theme .os-brand { gap:8px; }
+ .orbit-theme .os-brand small { display:none; }
+ .orbit-theme .os-main { padding-inline:12px; }
+ .orbit-theme .os-navigation { inset-inline:8px; gap:2px; padding:5px; }
+ .orbit-theme .os-navigation a { font-size:.75rem; padding-inline:2px; }
+ .orbit-theme .research-tabs button { font-size:.8125rem; padding:9px 6px; }
+ .orbit-theme .import-pipeline li { min-width:100%; }
+ .orbit-theme .action-row>.action-primary,.orbit-theme .action-row>.action-secondary { width:100%; }
+}
+@media(min-width:1800px) {
+ .orbit-theme .os-main,.orbit-theme .os-footer { max-width:1920px; }
+ .orbit-theme .os-header { padding-inline:max(24px,calc((100vw - 1920px)/2)); }
+ .orbit-theme .monitor-mode .os-main { max-width:1900px; }
+ .orbit-theme .monitor-mode .scene-system-list button { font-size:1.125rem; min-height:58px; }
+ .orbit-theme .monitor-mode .scene-system-title h2 { font-size:1.5rem; }
+ .orbit-theme .monitor-mode .scene-source-note,.orbit-theme .monitor-mode .scene-record-count span { font-size:1rem; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .orbit-theme *, .orbit-theme *:before,.orbit-theme *:after { transition:none!important; animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; }
+ .orbit-theme .os-main>div:not(.context-bar) { animation:none!important; }
+}
+@media(forced-colors:active) {
+ .orbit-theme :is(button,a,input,select,textarea,summary,[tabindex]):focus-visible { outline:2px solid Highlight!important; outline-offset:3px; box-shadow:none!important; }
+ .orbit-theme [aria-pressed=true],.orbit-theme [aria-current=page],.orbit-theme [data-state=active] { outline:1px solid Highlight; }
+}
