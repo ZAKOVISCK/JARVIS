@@ -5,6 +5,11 @@ import "./investigation.css";
 import "./fleet-atlas.css";
 import "./orbita.css";
 import "./operational-refinements.css";
+import "./approved-design.css";
+import "./approved-investigation.css";
+import "./approved-fleet.css";
+import "./approved-integration.css";
+import "./approved-memory.css";
 
 export const metadata: Metadata = {
   title: "JARVIS — Cognitive Maintenance OS",

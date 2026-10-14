@@ -5,7 +5,7 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {DatabaseSync} from 'node:sqlite';
 import {drizzle} from 'drizzle-orm/d1';
-import {inspectImportCsv,parseImportCsv,validateImportRow} from '../lib/import-pipeline.ts';
+import {inspectImportCsv,parseImportCsv,validateImportRow,importRowKey} from '../lib/import-pipeline.ts';
 import {readLimitedText,BodyLimitError} from '../lib/request-body.ts';
 import {INSERT_SNAPSHOT,snapshotValues} from '../lib/query-journal.ts';
 const {build}=createRequire(import.meta.resolve('wrangler'))('esbuild'),root=path.resolve(import.meta.dirname,'..'),work=path.join(root,'work/api-tests');fs.mkdirSync(work,{recursive:true});
@@ -83,4 +83,58 @@ test('rastreabilidade rejeita nome truncável e posições fornecidas inválidas
  assert.equal((await routes.imports.POST(request({fileName:'duplicate-position.csv',rows:[row,{...row,part:'Filtro de Ar'}]},'POSITION-OWNER'))).status,400);
  assert.equal((await routes.imports.POST(request({fileName:'N'.repeat(177)+'.csv',content:csv},'POSITION-OWNER'))).status,400);
  assert.equal(raw.prepare('SELECT COUNT(*) n FROM import_jobs').get().n,before);
+});
+test('ações e decisões rejeitam corpo não estruturado ou UTF-8 inválido sem gravar auditoria',async()=>{
+ const before=raw.prepare('SELECT COUNT(*) n FROM audit_events').get().n;
+ for(const name of ['imports/[id]','query-history/[id]/events']){
+  for(const body of [null,[],true,42,'ação'])assert.equal((await routes[name].POST(request(body),params('missing'))).status,400,name+' '+JSON.stringify(body));
+  const invalid=new Request('http://test.local/api',{method:'POST',headers:{'oai-authenticated-user-id':'A'},body:new Uint8Array([0xff])});
+  assert.equal((await routes[name].POST(invalid,params('missing'))).status,400,name+' UTF-8');
+ }
+ assert.equal(raw.prepare('SELECT COUNT(*) n FROM audit_events').get().n,before);
+});
+test('exportação por decisão não inclui decisões commitadas após o corte da primeira página',async()=>{
+ const template={prefix:'55154',part:'Bico Injetor',resolvedPart:'Bico Injetor',query:'Bico Injetor',status:'not_found',sourceMode:'sheets',validated:false,latest:null},owner='DECISION-EXPORT-OWNER',runId='TEST-DECISION-EXPORT',createdAt='2026-09-28T08:00:00.000Z';
+ const confirm=id=>raw.prepare('INSERT INTO audit_events(id,owner_id,subject_id,kind,actor,created_at,payload) VALUES(?,?,?,?,?,?,?)').run(crypto.randomUUID(),owner,id,'confirm',owner,createdAt,'{}');
+ for(let i=0;i<32;i++){
+  const snapshot={...template,id:'TEST-DECISION-HISTORY-'+String(i).padStart(4,'0'),runId,itemKey:String(i),queriedAt:createdAt};
+  raw.prepare(INSERT_SNAPSHOT).run(...snapshotValues(owner,'fixture',snapshot));
+  if(i!==0)confirm(snapshot.id);
+ }
+ const first=await(await routes['query-history'].GET(request(undefined,owner,'http://test?run='+runId+'&decision=confirm'))).json();
+ assert.equal(first.total,31);assert.equal(first.records.length,30);assert.ok(first.nextCursor);
+ // The request started before the cutoff but its decision was committed after the first page.
+ confirm('TEST-DECISION-HISTORY-0000');
+ const p=new URLSearchParams({run:runId,decision:'confirm',watermark:String(first.watermark),decisionWatermark:String(first.decisionWatermark),asOf:first.asOf,cursor:first.nextCursor});
+ const second=await(await routes['query-history'].GET(request(undefined,owner,'http://test?'+p))).json();
+ assert.equal(second.total,31);assert.equal(second.records.length,1);
+ assert.equal(second.records[0].id,'TEST-DECISION-HISTORY-0001');
+ const byPage=new URLSearchParams(p);byPage.delete('cursor');byPage.set('page','2');
+ assert.equal((await(await routes['query-history'].GET(request(undefined,owner,'http://test?'+byPage))).json()).total,31);
+ assert.equal((await(await routes['query-history'].GET(request(undefined,owner,'http://test?run='+runId+'&decision=confirm'))).json()).total,32);
+ for(const decisionWatermark of ['-1','NaN','1.5']){const invalid=new URLSearchParams(p);invalid.set('decisionWatermark',decisionWatermark);assert.equal((await routes['query-history'].GET(request(undefined,owner,'http://test?'+invalid))).status,400)}
+ const missing=new URLSearchParams(p);missing.delete('decisionWatermark');assert.equal((await routes['query-history'].GET(request(undefined,owner,'http://test?'+missing))).status,400);
+});
+test('aprovação recusa revisão com chave legada divergente sem integrar nem alterar auditoria',async()=>{
+ const owner='LEGACY-REVIEW-OWNER',row={...parseImportCsv(csv)[0],sourceRecordId:'',time:'09:00'};
+ const prepare=async rows=>{const response=await routes.imports.POST(request({fileName:'legacy-review.csv',rows},owner));assert.equal(response.status,201);return (await response.json()).job};
+ const legacy=await prepare([row]);
+ const staged=raw.prepare('SELECT payload FROM import_rows WHERE owner_id=? AND job_id=?').get(owner,legacy.id);
+ const candidate=JSON.parse(staged.payload);
+ // Reproduce a review prepared by the version that omitted explicit time from the key.
+ raw.prepare('UPDATE import_rows SET dedupe_key=? WHERE owner_id=? AND job_id=?').run(importRowKey({...candidate,time:null}),owner,legacy.id);
+ const current=await prepare([row,{...row,rowNumber:3,time:'10:00'}]);assert.equal(current.acceptedRows,2);
+ const auditBefore=raw.prepare('SELECT COUNT(*) n FROM audit_events WHERE owner_id=?').get(owner).n;
+ const m=routes['imports/[id]'],response=await m.POST(request({action:'integrate'},owner),params(legacy.id));
+ assert.equal(response.status,409);assert.match((await response.json()).error,/nova.*revis|revis.*nova/i);
+ assert.equal(raw.prepare('SELECT status FROM import_jobs WHERE owner_id=? AND id=?').get(owner,legacy.id).status,'review');
+ assert.equal(raw.prepare('SELECT COUNT(*) n FROM audit_events WHERE owner_id=?').get(owner).n,auditBefore);
+ assert.equal(raw.prepare('SELECT COUNT(*) n FROM maintenance WHERE owner_id=?').get(owner).n,0);
+ assert.equal((await m.POST(request({action:'integrate'},owner),params(current.id))).status,200);
+ assert.deepEqual(raw.prepare('SELECT time FROM maintenance WHERE owner_id=? ORDER BY time').all(owner).map(r=>r.time),['09:00','10:00']);
+ assert.equal((await m.POST(request({action:'integrate'},owner),params(legacy.id))).status,409);
+ assert.equal((await m.POST(request({action:'cancel'},owner),params(legacy.id))).status,200);
+ const compatibleOwner='LEGACY-NO-TIME-OWNER';
+ const compatible=await(await routes.imports.POST(request({fileName:'legacy-no-time.csv',rows:[{...row,time:''}]},compatibleOwner))).json();
+ assert.equal((await m.POST(request({action:'integrate'},compatibleOwner),params(compatible.job.id))).status,200);
 });

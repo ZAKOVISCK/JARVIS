@@ -84,6 +84,7 @@ function splitMaterial(original) {
 }
 
 function classify(family, canonical) {
+  canonical = canonical.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
   if (family === "Servico Terceiros" || /^SERVICO\b/.test(canonical)) return "servico";
   if (consumableFamilies.has(family) || consumableStart.test(canonical)) return "consumivel";
   if (accessoryStart.test(canonical)) return "acessorio";
@@ -91,12 +92,14 @@ function classify(family, canonical) {
 }
 
 function aliasesFor(canonical) {
+  canonical = canonical.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
   const aliases = new Set();
   for (const rule of aliasRules) if (rule.test.test(canonical)) rule.aliases.forEach(alias => aliases.add(alias));
   return [...aliases].sort((a, b) => a.localeCompare(b, "pt-BR"));
 }
 
 function standardizedPartFor(canonical) {
+  canonical = canonical.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
   const matches = standardizedParts.filter(part => part.test.test(canonical));
   if (matches.length > 1) throw new Error(`Material pertence a mais de uma peça-mãe: ${canonical}`);
   return matches[0];
@@ -130,7 +133,7 @@ for (const file of files) {
       positiveRecords: 0,
     };
     item.records += 1;
-    if (row[4] === null || Number(row[4]) > 0) item.positiveRecords += 1;
+    if (typeof row[4] === "number" && Number.isFinite(row[4]) && row[4] > 0) item.positiveRecords += 1;
     materials.set(code, item);
   }
 }
@@ -143,7 +146,6 @@ const sorted = [...materials.values()].sort((a, b) =>
 const aliases = new Set(sorted.flatMap(item => item.aliases));
 const standardizedCatalog = standardizedParts.map(part => {
   const members = sorted.filter(item => item.standardizedPartId === part.id);
-  if (!members.length) throw new Error(`Peça-mãe sem materiais associados: ${part.name}`);
   return {
     id: part.id,
     name: part.name,

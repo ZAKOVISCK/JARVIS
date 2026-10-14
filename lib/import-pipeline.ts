@@ -103,7 +103,18 @@ function normalizeDate(value: string) {
 
 export function importRowKey(row: Omit<ImportCandidate,"movementType"> & {movementType?:string|null}) {
   if (row.sourceRecordId && !row.sourceRecordId.startsWith("AUTO-")) return ["source-line", keyText(row.source), keyText(row.sourceRecordId), row.prefix, keyText(row.part), row.date, row.time||"", row.quantity??"", row.movementType||"unknown", keyText(row.workOrder)].join("\u001f");
-  return [row.prefix, keyText(row.part), row.date, row.km ?? "", row.quantity ?? "", row.movementType ?? "issue", keyText(row.mechanic), keyText(row.workOrder), keyText(row.source), keyText(row.notes)].join("\u001f");
+  const fields=[row.prefix, keyText(row.part), row.date, row.km ?? "", row.quantity ?? "", row.movementType ?? "issue", keyText(row.mechanic), keyText(row.workOrder), keyText(row.source), keyText(row.notes)];
+  if(row.time)fields.push(row.time);
+  return fields.join("\u001f");
+}
+
+/** Preserve decimal fractions; accept Brazilian grouped numbers without guessing malformed input. */
+function importNumber(value:string) {
+  const text=value.trim();
+  if(!text)return null;
+  if(/^[+-]?\d{1,3}(?:\.\d{3})+(?:,\d+)?$/.test(text))return Number(text.replaceAll('.','').replace(',','.'));
+  if(/^[+-]?\d+(?:[.,]\d+)?$/.test(text))return Number(text.replace(',','.'));
+  return NaN;
 }
 
 export function classifyMovement(value: string, quantity: number | null, notes = "") {
@@ -135,11 +146,9 @@ export function validateImportRow(row: ImportRawRow): ImportValidation {
   if (date > localToday) return { status: "quarantine", reason: "Data futura não permitida." };
   const source = row.source.trim().slice(0, 180);
   if (!source) return { status: "quarantine", reason: "Origem não informada." };
-  const kmText = row.km.replace(/[.\s]/g, "").replace(",", ".");
-  const km = kmText ? Number(kmText) : null;
+  const km = importNumber(row.km);
   if (km !== null && (!Number.isInteger(km) || km < 0 || km > 9_999_999)) return { status: "quarantine", reason: "Quilometragem inválida." };
-  const quantityText = row.quantity.replace(/[.\s]/g, "").replace(",", ".");
-  const quantity = quantityText ? Number(quantityText) : null;
+  const quantity = importNumber(row.quantity);
   if (quantity !== null && (!Number.isFinite(quantity) || Math.abs(quantity) > 1_000_000)) return { status: "quarantine", reason: "Quantidade inválida." };
   const notes = row.notes.trim().slice(0, 500) || null;
   const sourceRecordId = row.sourceRecordId.trim().slice(0, 120) || null;

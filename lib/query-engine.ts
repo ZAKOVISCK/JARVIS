@@ -3,6 +3,7 @@ import {
   findExactPartRows,
   findMatches,
   findVehicleCode,
+  hasAccessoryTerms,
   formatPrefix,
   materialCode,
   normalize,
@@ -79,6 +80,8 @@ function shiftDate(now:Date,amount:number,unit:"days"|"months"|"years") {
   return result;
 }
 
+const materialCodeContext=/\b(?:c[oó]digos?|cod\.?|materiais|material)\s*[nº°.:#-]*\s*(\d{4,6}(?:\s*(?:,|;|\be\b)\s*\d{4,6})*)\b/gi;
+
 function parsePeriod(query:string,now:Date):QueryPeriod|null {
   const local=new Date(dayInBrazil(now)+'T12:00:00Z');
   const dates=[...query.matchAll(/\b(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2})\b/g)].map(match=>match[1].includes('/')?parseBrazilianDate(match[1]):match[1]);
@@ -92,22 +95,25 @@ function parsePeriod(query:string,now:Date):QueryPeriod|null {
     const labelUnit=unit==='days'?(amount===1?'dia':'dias'):unit==='months'?(amount===1?'mês':'meses'):(amount===1?'ano':'anos');
     return {from:isoDate(shiftDate(local,amount,unit)),to:isoDate(local),label:`${amount===1?'Último':'Últimos'} ${amount} ${labelUnit}`};
   }
-  const year=query.match(/\b(20\d{2})\b/)?.[1];
+  const calendarText=query.replace(materialCodeContext,' ').replace(/\b(?:o\.?s\.?|ordem\s+de\s+servi[cç]o|ficha)\s*[nº°.:#-]*\s*\d+\b/gi,' ');
+  const year=calendarText.match(/\b(20\d{2})\b/)?.[1];
   if(year)return {from:`${year}-01-01`,to:`${year}-12-31`,label:year};
   return null;
 }
 
-function resolveStandardizedPart(query:string,catalog:CatalogData|null|undefined):StandardizedPart|null {
+function resolveStandardizedParts(query:string,catalog:CatalogData|null|undefined):StandardizedPart[] {
   const tokens=queryTokens(query);
   const matches=(catalog?.standardizedParts||[]).filter(part=>[part.name,...part.aliases].some(label=>{
     const labelTokens=queryTokens(label);
     return labelTokens.length>0&&labelTokens.every(token=>tokens.includes(token));
   }));
-  return matches.length===1?matches[0]:null;
+  return matches.filter(part=>!hasAccessoryTerms(query)||part.id==='valvula-termostatica');
 }
 
-function requestedMaterialCode(query:string,prefix:string|null,os:string|null,ficha:string|null) {
-  return [...query.matchAll(/\b\d{4,6}\b/g)].map(match=>match[0]).find(value=>value!==prefix&&value!==os&&value!==ficha&&!/^(?:19|20)\d{2}$/.test(value))??null;
+function requestedMaterialCodes(query:string,prefix:string|null,os:string|null,ficha:string|null) {
+  const explicit=[...query.matchAll(materialCodeContext)].flatMap(match=>match[1].match(/\d{4,6}/g)||[]);
+  const implicit=[...query.matchAll(/\b\d{4,6}\b/g)].map(match=>match[0]).filter(value=>value!==prefix&&value!==os&&value!==ficha&&!/^(?:19|20)\d{2}$/.test(value));
+  return [...new Set([...explicit,...implicit])];
 }
 
 export function interpretQuery(query:string,summary:Summary,catalog?:CatalogData|null,now=new Date()):QueryPlan {
@@ -123,8 +129,15 @@ export function interpretQuery(query:string,summary:Summary,catalog?:CatalogData
   const prefix=mentions.length?(explicit[0]?String(Number(explicit[0])-55000):null):findVehicleCode(query,summary);
   const os=query.match(/\b(?:o\.?s\.?|ordem\s+de\s+servi[cç]o)\s*[nº°:#-]*\s*(\d{4,8})\b/i)?.[1]??null;
   const ficha=query.match(/\bficha\s*[nº°:#-]*\s*(\d{3,8})\b/i)?.[1]??null;
-  const standardized=resolveStandardizedPart(query,catalog);
-  const code=requestedMaterialCode(query,prefix?formatPrefix(prefix):null,os,ficha);
+  const candidates=resolveStandardizedParts(query,catalog);
+  const requestedCodes=requestedMaterialCodes(query,prefix?formatPrefix(prefix):null,os,ficha);
+  const code=requestedCodes[0]??null;
+  if(requestedCodes.length>1)issues.push('A pergunta contém vários códigos de material. Use a pesquisa em lote para consultar cada peça.');
+  if(candidates.length>1)issues.push('A pergunta corresponde a várias peças-mãe. Informe uma peça ou código por consulta.');
+  const namedPart=candidates.length===1?candidates[0]:null;
+  if(code&&namedPart&&catalog?.materials.some(material=>material.code===code)&&!namedPart.codes.includes(code))issues.push('O código de material não corresponde à peça-mãe mencionada. Confira os critérios antes de consultar.');
+  // A specific code must never be widened back to all codes of a parent part.
+  const standardized=code?null:namedPart;
   const serviceWords=/\b(?:servicos?|defeitos?|ocorrencias?|providencias?|fichas?|manutencao|manutencoes)\b/.test(normalized);
   const partWords=Boolean(standardized||code)||/\b(?:pecas?|materiais|material|saidas?|retiradas?|almoxarifado|extrato|trocas?|substituicoes?)\b/.test(normalized);
   const explicitPartRequest=/\b(?:pecas?|materiais|material|saidas?|retiradas?|almoxarifado|extrato)\b/.test(normalized);

@@ -1,7 +1,7 @@
 import {materialCode, normalize, queryTokens, formatPrefix, type CatalogData, type VehicleData} from "./fleet.ts";
 import {normalizeOperationalPrefix} from "./import-pipeline.ts";
 
-export const VALIDATION_VERSION="stock-evidence-3";
+export const VALIDATION_VERSION="stock-evidence-4";
 export type ValidationStatus="validated"|"old"|"incomplete"|"unconfirmed"|"movement_only"|"not_found"|"vehicle_unknown"|"inconclusive"|"service_found"|"records_found";
 export const statusLabels:Record<ValidationStatus,string>={validated:"Saída validada",old:"Saída validada · antiga",incomplete:"Saída validada · dados incompletos",unconfirmed:"Sem confirmação de saída",movement_only:"Movimento sem saída validada",not_found:"Sem registros",vehicle_unknown:"Veículo sem dados suficientes",inconclusive:"Requer análise",service_found:"Serviço localizado",records_found:"Registros da O.S."};
 export type SourceMode="sheets"|"csv";
@@ -47,16 +47,24 @@ export function analyzeStock(item:SearchItem,records:StockRecord[],catalog:Catal
  // A broad free-text match spanning unrelated components cannot silently choose one.
  if(!resolved.codes&&new Set(matched.map(r=>definition.get(r.code)?.standardizedPartId||r.code||normalize(r.part))).size>1){result.status="inconclusive";result.needsReview=true;result.explanation="A descrição corresponde a materiais diferentes. Selecione uma peça-mãe ou informe o código.";result.evidence=matched.slice(0,8);result.evidenceCount=matched.length;return result;}
  const candidates:StockRecord[]=[];const excluded:StockRecord[]=[];const relatedOutside:StockRecord[]=[];const assessments:{recordId:string;eligible:boolean;reasons:string[]}[]=[];
- const negatives=(options.reconciliationRecords||matched).filter(match).filter(n=>n.movement==="reversal"||n.movement==="return"||(n.quantity!==null&&n.quantity<0));
+ // A return naming only the parent part may concern a requested exact code.
+ // It cannot confirm an exact-code issue, but it must prevent false confirmation.
+ const negativeMatch=(r:StockRecord)=>{
+  if(match(r))return true;
+  if(r.prefix!==result.prefix||r.code||!resolved.codes)return false;
+  const candidate=resolvePart(r.part,catalog);
+  return !!candidate.codes&&!candidate.ambiguous&&[...candidate.codes].some(code=>resolved.codes!.has(code));
+ };
+ const negatives=(options.reconciliationRecords||records).filter(negativeMatch).filter(n=>n.movement==="reversal"||n.movement==="return"||(n.quantity!==null&&n.quantity<0));
  const byDocument=new Map<string,StockRecord[]>(),byOrder=new Map<string,StockRecord[]>(),matchedIds=new Set(matched.map(r=>r.id)),outsideIds=new Set<string>();
- const negativeKey=(r:StockRecord,reference:string)=>JSON.stringify([r.source,r.code,reference]);
+ const negativeKey=(r:StockRecord,reference:string)=>JSON.stringify([r.source,reference]);
  for(const n of negatives){for(const [index,reference] of [[byDocument,n.document],[byOrder,n.workOrder]] as const){if(!reference)continue;const key=negativeKey(n,reference),group=index.get(key)||[];group.push(n);index.set(key,group)}}
  for(const r of matched){
   const reliable=r.explicitIssue&&r.movement==="issue"&&r.quantity!==null&&Number.isFinite(r.quantity)&&r.quantity>0&&!!r.document?.trim()&&!!r.sourceFile.trim()&&Number.isSafeInteger(r.sourceLine)&&r.sourceLine!>0&&validDate(r.date)&&r.date<=today;
   const blocked=/\b(reserv\w*|solicit\w*|requisic\w*|cadastro|pendente|nao entregue|nao retirad\w*)\b/.test(normalize(r.note||""));
   // Without a line-level reversal link, any negative on the same document or O.S.
   // is treated conservatively as requiring reconciliation. Missing O.S. does not join.
-  const relatedNegatives=[...new Map([...(r.document?byDocument.get(negativeKey(r,r.document))||[]:[]),...(r.workOrder?byOrder.get(negativeKey(r,r.workOrder))||[]:[])].filter(n=>n.id!==r.id&&n.date>=r.date).map(n=>[n.id,n])).values()];
+  const relatedNegatives=[...new Map([...(r.document?byDocument.get(negativeKey(r,r.document))||[]:[]),...(r.workOrder?byOrder.get(negativeKey(r,r.workOrder))||[]:[])].filter(n=>n.id!==r.id&&n.date>=r.date&&(!n.code||!r.code||n.code===r.code)).map(n=>[n.id,n])).values()];
   const negative=relatedNegatives.length>0;
   const reasons:string[]=[];
   if(!r.explicitIssue||r.movement!=="issue")reasons.push("Natureza de saída não confirmada");

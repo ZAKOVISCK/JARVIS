@@ -4,11 +4,29 @@ import fs from 'node:fs';
 import {findVehicleCode,findMatches} from '../lib/fleet.ts';
 import {interpretQuery,buildPartEvidence,createGuidedPartPlan,executeQueryPlan} from '../lib/query-engine.ts';
 import {parseImportCsv,importRowKey,validateImportRow,normalizeOperationalPrefix,classifyMovement} from '../lib/import-pipeline.ts';
+import {VehicleResource} from '../lib/vehicle-resource.ts';
 
 const summary=JSON.parse(fs.readFileSync(new URL('../public/data/summary.json',import.meta.url),'utf8'));
 const catalog=JSON.parse(fs.readFileSync(new URL('../public/data/catalog.json',import.meta.url),'utf8'));
 const vehicle=JSON.parse(fs.readFileSync(new URL('../public/data/154.json',import.meta.url),'utf8'));
 const example={prefix:'55154',part:'Filtro',date:'2025-01-01',km:1000,mechanic:null,workOrder:'1001',source:'EXTRATO',notes:null,quantity:1,movementType:'issue'};
+
+test('leitura padrão do veículo preserva o receiver global exigido pelo fetch nativo',async t=>{
+  let calls=0;
+  t.mock.method(globalThis,'fetch',function(url,init){
+    if(this!==globalThis)throw new TypeError('Illegal invocation');
+    calls++;
+    assert.equal(url,'/data/1.json');
+    assert.ok(init.signal instanceof AbortSignal);
+    return Promise.resolve(new Response(JSON.stringify({code:'1',parts:[],services:[]})));
+  });
+  const resource=new VehicleResource();
+  const request=resource.acquire('001');
+  assert.equal((await request.promise).code,'1');
+  request.release();
+  assert.equal((await resource.acquire('1').promise).code,'1');
+  assert.equal(calls,1);
+});
 
 test('prefixos operacionais aceitam apenas as duas representações aprovadas',()=>{
   for(const [input,output] of [['1','55001'],['001','55001'],['55','55055'],['550','55550'],['559','55559'],['55559','55559']])assert.equal(normalizeOperationalPrefix(input),output);

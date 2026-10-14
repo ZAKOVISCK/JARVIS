@@ -47,10 +47,14 @@ function AlertDialogOverlay({
 function AlertDialogContent({
   className,
   size = "default",
+  onOpenAutoFocus,
+  onCloseAutoFocus,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
   size?: "default" | "sm"
 }) {
+  const opener = React.useRef<HTMLElement | null>(null)
+
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
@@ -62,6 +66,20 @@ function AlertDialogContent({
           className
         )}
         {...props}
+        onOpenAutoFocus={(event) => {
+          // Preserve the opener for controlled confirmations without a trigger.
+          opener.current = document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null
+          onOpenAutoFocus?.(event)
+        }}
+        onCloseAutoFocus={(event) => {
+          onCloseAutoFocus?.(event)
+          if (!event.defaultPrevented && opener.current?.isConnected) {
+            opener.current.focus({ preventScroll: true })
+            if (document.activeElement === opener.current) event.preventDefault()
+          }
+        }}
       />
     </AlertDialogPortal>
   )

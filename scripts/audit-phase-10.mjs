@@ -2,7 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 const dataDir = path.resolve("public/data");
-const today = new Date().toISOString().slice(0, 10);
+const today = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
+const validSourceDate = value => {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T12:00:00Z`);
+  return Number.isFinite(date.valueOf()) && date.toISOString().slice(0, 10) === value;
+};
 const summary = JSON.parse(fs.readFileSync(path.join(dataDir, "summary.json"), "utf8"));
 const catalog = JSON.parse(fs.readFileSync(path.join(dataDir, "catalog.json"), "utf8"));
 const files = fs.readdirSync(dataDir).filter(file => /^\d+\.json$/.test(file));
@@ -38,7 +43,7 @@ for (const file of files) {
   const serviceKeys = new Map();
   for (const row of vehicle.parts) {
     result.parts++;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(row[0])) result.invalidDates++;
+    if (!validSourceDate(row[0])) result.invalidDates++;
     else if (row[0] > today) result.futureDates++;
     if (!row[3]) result.missingPartDescriptions++;
     if (row[4] !== null && row[4] < 0) {
@@ -47,7 +52,7 @@ for (const file of files) {
       if(positiveMovements.has(movementKey))result.movements.reversals++;
       else result.movements.returns++;
     } else if(row[4]===0) result.movements.adjustments++;
-    else result.movements.issues++;
+    else if (typeof row[4] === "number" && Number.isFinite(row[4]) && row[4] > 0) result.movements.issues++;
     const key = JSON.stringify([row[0], row[1], row[2], row[3], row[4], row[5], row[7]]);
     const duplicate=partKeys.get(key)||{count:0,positions:[],row};duplicate.count++;duplicate.positions.push(row[6]);partKeys.set(key,duplicate);
   }
@@ -57,7 +62,7 @@ for (const file of files) {
   }
   for (const row of vehicle.services) {
     result.services++;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(row[0])) result.invalidDates++;
+    if (!validSourceDate(row[0])) result.invalidDates++;
     else if (row[0] > today) result.futureDates++;
     if (!row[1] && !row[3] && !row[5]) result.emptyServiceRows++;
     const key = JSON.stringify([row[0], row[1], row[2], row[3], row[4], row[5], row[7]]);

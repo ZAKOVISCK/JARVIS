@@ -7,7 +7,7 @@ export class VehicleResource{
  private pending=new Map<string,Pending>();
  private fetcher:typeof fetch;
  private capacity:number;
- constructor(fetcher:typeof fetch=fetch,capacity=20){if(!Number.isInteger(capacity)||capacity<1)throw new TypeError('Capacidade de cache inválida.');this.fetcher=fetcher;this.capacity=capacity}
+ constructor(fetcher:typeof fetch=(...args)=>globalThis.fetch(...args),capacity=20){if(!Number.isInteger(capacity)||capacity<1)throw new TypeError('Capacidade de cache inválida.');this.fetcher=fetcher;this.capacity=capacity}
  invalidate(code:string){this.cache.delete(code)}
  acquire(code:string){
   if(!/^\d{1,3}$/.test(code)||Number(code)<1||Number(code)>559)throw new Error('Prefixo fora da frota operacional.');
