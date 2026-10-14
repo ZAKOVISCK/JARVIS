@@ -6,8 +6,14 @@ import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />
+const SheetModalContext = React.createContext(true)
+
+function Sheet({ modal = true, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+  return (
+    <SheetModalContext.Provider value={modal}>
+      <SheetPrimitive.Root data-slot="sheet" modal={modal} {...props} />
+    </SheetModalContext.Provider>
+  )
 }
 
 function SheetTrigger({
@@ -49,11 +55,16 @@ function SheetContent({
   children,
   side = "right",
   showCloseButton = true,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left"
   showCloseButton?: boolean
 }) {
+  const modal = React.useContext(SheetModalContext)
+  const opener = React.useRef<HTMLElement | null>(null)
+
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -72,6 +83,20 @@ function SheetContent({
           className
         )}
         {...props}
+        onOpenAutoFocus={(event) => {
+          // Controlled sheets can be opened without a SheetTrigger.
+          opener.current = document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null
+          onOpenAutoFocus?.(event)
+        }}
+        onCloseAutoFocus={(event) => {
+          onCloseAutoFocus?.(event)
+          if (!event.defaultPrevented && modal && opener.current?.isConnected) {
+            opener.current.focus({ preventScroll: true })
+            if (document.activeElement === opener.current) event.preventDefault()
+          }
+        }}
       >
         {children}
         {showCloseButton && (

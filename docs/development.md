@@ -27,4 +27,6 @@ Não são necessárias planilhas operacionais nem credenciais de produção para
 
 `pnpm start` é preview local do build, sem login simulado nem deploy. Conversores de planilhas exigem Python e `openpyxl` no ambiente privado; não são necessários para exemplos.
 
+Quando usar o conversor XLSX, execute também `python -m unittest discover -s tests -p 'test_*.py'` nesse ambiente. Essa regressão usa somente planilhas fictícias e confere a preservação de documento, linha e quilometragem, sem arredondar valores fracionários nem incluir prefixos externos.
+
 Crie uma branch por alteração. O pull request deve descrever o problema, a mudança, testes e limitações. Layout exige verificação visual quando disponível; não declarar validação visual apenas pelo build. Mudanças de dependências ou esquema precisam de justificativa e rollback.

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import math
 import re
 import sys
 import tempfile
@@ -27,6 +28,15 @@ def numeric_code(value):
     if not re.fullmatch(r"\d+", raw):
         return None
     return str(int(raw))
+
+
+def chassis_km(value):
+    """Keep explicit integer mileage; never round a fractional source value."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    if not math.isfinite(value) or value < 0 or value > 9_999_999:
+        return None
+    return int(value) if value == int(value) else None
 
 
 def vehicle_code(value):
@@ -155,7 +165,7 @@ def build(listing, extract, fleet_source):
                 else:
                     # date of issue, OS, chassis KM, material, quantity, FUNC code, source row, family
                     km = row[ix["KM CHASSI"]]
-                    km = int(km) if isinstance(km, (float, int)) and km >= 0 else None
+                    km = chassis_km(km)
                     qty = row[ix["QUANT"]]
                     if isinstance(qty, (int, float)):
                         counts["positive_p" if qty > 0 else "negative_p" if qty < 0 else "zero_p"] += 1

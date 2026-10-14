@@ -13,23 +13,23 @@ const dateTime=(s:string)=>new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",ti
 const queryDate=(s:string)=>new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeZone:"America/Sao_Paulo"}).format(new Date(s));
 const queryTime=(s:string)=>new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"}).format(new Date(s));
 const empty={q:"",prefix:"",from:"",to:"",status:"all",source:"all",decision:"all"};
-type JournalResponse={records:SearchSnapshot[];total:number;counts:Record<string,number>;watermark?:number;asOf?:string;nextCursor?:string|null;error?:string};
+type JournalResponse={records:SearchSnapshot[];total:number;counts:Record<string,number>;watermark?:number;decisionWatermark?:number;asOf?:string;nextCursor?:string|null;error?:string};
 export function QueryHistory({visible,onMaintenance,onSearch,onReopen}:{visible:boolean;onMaintenance:(s:string)=>void;onSearch:()=>void;onReopen:(r:SearchSnapshot)=>void}){
  const [view,setView]=useState("timeline");
  const [draft,setDraft]=useState(empty),[filters,setFilters]=useState(empty),[page,setPage]=useState(1),[refresh,setRefresh]=useState(0);
  const [data,setData]=useState<JournalResponse>({records:[],total:0,counts:{}}),[busy,setBusy]=useState(false),[error,setError]=useState("");
  const [detail,setDetail]=useState<SearchSnapshot|null>(null),[selected,setSelected]=useState<SearchSnapshot[]>([]),[compare,setCompare]=useState(false);
  const [exportProgress,setExportProgress]=useState<{done:number;total:number}|null>(null),[exportNotice,setExportNotice]=useState(''),[exportError,setExportError]=useState('');
- const exportAbort=useRef<AbortController|null>(null),pageSession=useRef<{watermark:number;asOf:string}|null>(null);
+ const exportAbort=useRef<AbortController|null>(null),pageSession=useRef<{watermark:number;decisionWatermark:number;asOf:string}|null>(null);
  useEffect(()=>()=>{exportAbort.current?.abort()},[]);
  useEffect(()=>{
   if(!visible)return;
   const controller=new AbortController(),timer=setTimeout(()=>{setBusy(true);setError('')},0),p=new URLSearchParams({...filters,page:String(page)});
-  if(page>1&&pageSession.current){p.set('watermark',String(pageSession.current.watermark));p.set('asOf',pageSession.current.asOf)}
+  if(page>1&&pageSession.current){p.set('watermark',String(pageSession.current.watermark));p.set('decisionWatermark',String(pageSession.current.decisionWatermark));p.set('asOf',pageSession.current.asOf)}
   void fetch('/api/query-history?'+p,{cache:'no-store',signal:controller.signal}).then(async response=>{
    const next=await response.json() as JournalResponse;if(!response.ok)throw new Error(next.error||'Não foi possível carregar o histórico.');
    if(controller.signal.aborted)return;
-   if(page===1&&typeof next.watermark==='number'&&next.asOf)pageSession.current={watermark:next.watermark,asOf:next.asOf};
+   if(page===1&&typeof next.watermark==='number'&&typeof next.decisionWatermark==='number'&&next.asOf)pageSession.current={watermark:next.watermark,decisionWatermark:next.decisionWatermark,asOf:next.asOf};
    setData(next);
   }).catch(e=>{if(!controller.signal.aborted)setError(e instanceof Error?e.message:'Falha ao carregar o histórico.')}).finally(()=>{clearTimeout(timer);if(!controller.signal.aborted)setBusy(false)});
   return()=>{clearTimeout(timer);controller.abort()};
@@ -43,13 +43,13 @@ export function QueryHistory({visible,onMaintenance,onSearch,onReopen}:{visible:
    while(true){
     const response=await fetch(`/api/query-history?${p}`,{cache:'no-store',signal:controller.signal}),next=await response.json() as JournalResponse;
     if(!response.ok)throw new Error(next.error||'Falha ao exportar a seleção.');
-    if(!Array.isArray(next.records)||typeof next.watermark!=='number'||!next.asOf||!Number.isSafeInteger(next.total))throw new Error('Resposta de exportação incompleta. Nenhum arquivo foi gerado.');
+    if(!Array.isArray(next.records)||typeof next.watermark!=='number'||typeof next.decisionWatermark!=='number'||!next.asOf||!Number.isSafeInteger(next.total))throw new Error('Resposta de exportação incompleta. Nenhum arquivo foi gerado.');
     expected??=next.total;if(next.total!==expected)throw new Error('A seleção mudou durante a leitura. Atualize o histórico e tente novamente.');
     for(const record of next.records)chunks.push('\r\n'+recordExportRow(record).map(csvCell).join(';'));
     done+=next.records.length;setExportProgress({done,total:expected});
     if(!next.nextCursor)break;
     if(!next.records.length||seenCursors.has(next.nextCursor))throw new Error('A paginação não avançou. Nenhum arquivo foi gerado.');
-    seenCursors.add(next.nextCursor);p.set('watermark',String(next.watermark));p.set('asOf',next.asOf);p.set('cursor',next.nextCursor);
+    seenCursors.add(next.nextCursor);p.set('watermark',String(next.watermark));p.set('decisionWatermark',String(next.decisionWatermark));p.set('asOf',next.asOf);p.set('cursor',next.nextCursor);
    }
    if(controller.signal.aborted)throw new DOMException('Exportação cancelada','AbortError');
    if(done!==expected)throw new Error('A exportação ficou incompleta. Nenhum arquivo foi gerado.');

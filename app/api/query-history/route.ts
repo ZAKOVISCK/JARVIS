@@ -20,11 +20,13 @@ export async function GET(request:NextRequest){
  try{
   const p=request.nextUrl.searchParams,db=getRawDb(),clauses=['owner_id=?'],args:(string|number)[]=[owner];
   // Freeze committed records and the decision cutoff for multi-page exports.
-  const suppliedWatermark=p.get('watermark'),suppliedAsOf=p.get('asOf');
+  const suppliedWatermark=p.get('watermark'),suppliedAsOf=p.get('asOf'),suppliedDecisionWatermark=p.get('decisionWatermark');
   if(Boolean(suppliedWatermark)!==Boolean(suppliedAsOf))throw new TypeError();
+  if(suppliedDecisionWatermark!==null&&(!suppliedWatermark||!suppliedAsOf))throw new TypeError();
   const watermark=suppliedWatermark!==null?Number(suppliedWatermark):Number((await db.prepare('SELECT COALESCE(MAX(rowid),0) AS n FROM query_history WHERE owner_id=?').bind(owner).first<{n:number}>())?.n||0);
+  const decisionWatermark=suppliedDecisionWatermark!==null?Number(suppliedDecisionWatermark):Number((await db.prepare('SELECT COALESCE(MAX(rowid),0) AS n FROM audit_events WHERE owner_id=?').bind(owner).first<{n:number}>())?.n||0);
   const asOf=suppliedAsOf||new Date().toISOString();
-  if(!Number.isSafeInteger(watermark)||watermark<0||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(asOf)||Number.isNaN(Date.parse(asOf)))throw new TypeError();
+  if(!Number.isSafeInteger(watermark)||watermark<0||!Number.isSafeInteger(decisionWatermark)||decisionWatermark<0||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(asOf)||Number.isNaN(Date.parse(asOf)))throw new TypeError();
   clauses.push('rowid<=?','created_at<=?');args.push(watermark,asOf);
   for(const [key,value] of [['id',p.get('id')],['run_id',p.get('run')]] as const){
    if(value){if(value.length>80)throw new TypeError();clauses.push(key+'=?');args.push(value)}
@@ -43,7 +45,8 @@ export async function GET(request:NextRequest){
   const decision=p.get('decision');
   if(decision&&decision!=='all'){
    if(!['confirm','correction','report'].includes(decision))throw new TypeError();
-   clauses.push('EXISTS(SELECT 1 FROM audit_events e WHERE e.owner_id=query_history.owner_id AND e.subject_id=query_history.id AND e.kind=? AND e.created_at<=?)');args.push(decision,asOf);
+   if(suppliedWatermark!==null&&suppliedDecisionWatermark===null)throw new TypeError();
+   clauses.push('EXISTS(SELECT 1 FROM audit_events e WHERE e.owner_id=query_history.owner_id AND e.subject_id=query_history.id AND e.kind=? AND e.created_at<=? AND e.rowid<=?)');args.push(decision,asOf,decisionWatermark);
   }
   const status=p.get('status');
   if(status&&status!=='all'){
@@ -70,7 +73,7 @@ export async function GET(request:NextRequest){
   ]);
   const counts=Object.fromEntries(responses[1].results.map(r=>[String(r.status),Number(r.n)])),rows=responses[0].results.slice(0,30),last=rows.at(-1);
   const nextCursor=responses[0].results.length>30&&last?btoa(JSON.stringify({date:last.created_at,id:last.id})):null;
-  return NextResponse.json({records:rows.map(r=>JSON.parse(String(r.snapshot))),total:Object.values(counts).reduce((a,b)=>a+b,0),counts,page,watermark,asOf,nextCursor},{headers:{'Cache-Control':'no-store'}});
+  return NextResponse.json({records:rows.map(r=>JSON.parse(String(r.snapshot))),total:Object.values(counts).reduce((a,b)=>a+b,0),counts,page,watermark,decisionWatermark,asOf,nextCursor},{headers:{'Cache-Control':'no-store'}});
  }catch(e){
   if(!(e instanceof TypeError))console.error('Query history failed',e);
   return NextResponse.json({error:e instanceof TypeError?'Revise o prefixo, o período e a paginação dos filtros.':'Não foi possível carregar o histórico. Tente novamente.'},{status:e instanceof TypeError?400:503});

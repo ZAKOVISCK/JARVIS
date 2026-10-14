@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { and, asc, eq } from "drizzle-orm";
 import { getDb,getRawDb } from "@/db";
 import { importJobs, importRows } from "@/db/schema";
-import { type ImportCandidate } from "@/lib/import-pipeline";
+import { importRowKey, type ImportCandidate } from "@/lib/import-pipeline";
 
 import {PUBLISH_IMPORT,RECONCILE_IMPORT,COMPLETE_IMPORT} from "@/lib/import-transaction";
-import {readLimitedText,BodyLimitError} from "@/lib/request-body";
+import {readLimitedJsonObject,BodyLimitError} from "@/lib/request-body";
 export const dynamic = "force-dynamic";
 const getOwner = (request: NextRequest) => request.headers.get("oai-authenticated-user-id");
 
@@ -33,7 +33,14 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
 
 export async function POST(request:NextRequest,context:{params:Promise<{id:string}>}){
  const owner=getOwner(request);if(!owner)return NextResponse.json({error:"Acesso autenticado necessário."},{status:401});
- try{const {id}=await context.params,{action}=JSON.parse(await readLimitedText(request,2048));if(!['integrate','rollback','cancel'].includes(action))return NextResponse.json({error:'Ação inválida.'},{status:400});const db=getRawDb(),job=await db.prepare('SELECT * FROM import_jobs WHERE id=? AND owner_id=?').bind(id,owner).first<{status:string}>();if(!job)return NextResponse.json({error:'Versão não encontrada.'},{status:404});const expected=action==='rollback'?'integrated':'review';if(job.status!==expected)return NextResponse.json({error:'O estado desta versão não permite esta ação.'},{status:409});const now=new Date().toISOString(),audit=db.prepare('INSERT INTO audit_events(id,owner_id,subject_id,kind,actor,created_at,payload) SELECT ?,owner_id,id,?,owner_id,?,? FROM import_jobs WHERE id=? AND owner_id=? AND status=?').bind(crypto.randomUUID(),`import_${action}`,now,JSON.stringify({action}),id,owner,expected);
+ try{const {id}=await context.params,{action}=await readLimitedJsonObject(request,2048);if(typeof action!=='string'||!['integrate','rollback','cancel'].includes(action))return NextResponse.json({error:'Ação inválida.'},{status:400});const db=getRawDb(),job=await db.prepare('SELECT * FROM import_jobs WHERE id=? AND owner_id=?').bind(id,owner).first<{status:string}>();if(!job)return NextResponse.json({error:'Versão não encontrada.'},{status:404});const expected=action==='rollback'?'integrated':'review';if(job.status!==expected)return NextResponse.json({error:'O estado desta versão não permite esta ação.'},{status:409});
+ if(action==='integrate'){
+  const rows=(await db.prepare("SELECT payload,dedupe_key FROM import_rows WHERE job_id=? AND owner_id=? AND status IN ('accepted','duplicate') ORDER BY id").bind(id,owner).all<{payload:string;dedupe_key:string|null}>()).results;
+  // A reviewed version must keep the same deduplication semantics at approval.
+  // Requiring a new review preserves old payloads, counts and the unique-key concurrency guard.
+  if(rows.some(row=>row.dedupe_key!==importRowKey(JSON.parse(row.payload) as ImportCandidate)))return NextResponse.json({error:'As regras de deduplicação mudaram desde a preparação desta versão. Prepare uma nova importação para revisão antes de aprovar.'},{status:409});
+ }
+ const now=new Date().toISOString(),audit=db.prepare('INSERT INTO audit_events(id,owner_id,subject_id,kind,actor,created_at,payload) SELECT ?,owner_id,id,?,owner_id,?,? FROM import_jobs WHERE id=? AND owner_id=? AND status=?').bind(crypto.randomUUID(),`import_${action}`,now,JSON.stringify({action}),id,owner,expected);
  if(action==='integrate')await db.batch([audit,db.prepare(PUBLISH_IMPORT).bind(id,owner),db.prepare(RECONCILE_IMPORT).bind(id,owner),db.prepare(COMPLETE_IMPORT).bind(now,id,owner)]);
  if(action==='cancel')await db.batch([audit,db.prepare("UPDATE import_jobs SET status='cancelled',cancelled_at=? WHERE id=? AND owner_id=? AND status='review'").bind(now,id,owner)]);
  if(action==='rollback')await db.batch([audit,db.prepare("DELETE FROM maintenance WHERE import_job_id=? AND owner_id=? AND EXISTS(SELECT 1 FROM import_jobs WHERE id=? AND owner_id=? AND status='integrated')").bind(id,owner,id,owner),db.prepare("UPDATE import_rows SET status='rolled_back' WHERE job_id=? AND owner_id=? AND status='integrated' AND EXISTS(SELECT 1 FROM import_jobs WHERE id=? AND owner_id=? AND status='integrated')").bind(id,owner,id,owner),db.prepare("UPDATE import_jobs SET status='rolled_back',rolled_back_at=? WHERE id=? AND owner_id=? AND status='integrated'").bind(now,id,owner)]);

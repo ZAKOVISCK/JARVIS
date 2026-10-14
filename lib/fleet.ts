@@ -42,6 +42,11 @@ export function findCatalogMaterial(catalog:CatalogData|null|undefined, material
   return code?catalog?.materials.find(item=>item.code===code):undefined;
 }
 
+/** Mentioning the main component does not turn its accessories into that component. */
+export function hasAccessoryTerms(query:string) {
+  return /\b(?:abracadeiras?|ane(?:l|is)|arruelas?|buchas?|canos?|conector(?:es)?|conex(?:ao|oes)|flexive(?:l|is)|juntas?|mangueiras?|parafusos?|porcas?|prisioneiros?|reparos?|retentor(?:es)?|sensor(?:es)?|suportes?|tamp(?:ao|oes)|termin(?:al|ais)|travas?|tubos?|valvulas?)\b/.test(normalize(query));
+}
+
 export function findVehicleCode(query:string, summary:Summary):string|null {
   const codes = new Set(summary.fleet.filter(item=>Number(item.code)>=1&&Number(item.code)<=559).map(item=>String(Number(item.code))));
   const resolve=(value:string)=>{
@@ -75,12 +80,12 @@ export function findMatches(data:VehicleData, query:string, catalog?:CatalogData
   const requestedCodes=[...query.matchAll(/\b\d{4,6}\b/g)].map(match=>match[0]).filter(value=>!vehicleNumbers.has(value)&&value!==os&&value!==ficha&&!/^(?:19|20)\d{2}$/.test(value));
   const definitions=new Map((catalog?.materials||[]).map(item=>[item.code,item]));
   const normalizedQuery=normalize(query);
-  const accessoryWords=/\b(?:abracadeira|anel|arruela|bucha|cano|conector|conexao|flexivel|junta|mangueira|parafuso|porca|prisioneiro|retentor|sensor|suporte|tampao|terminal|trava|tubo|valvula)\b/;
+  const accessoryQuery=hasAccessoryTerms(query);
   const standardizedCandidates=(catalog?.standardizedParts||[]).filter(item=>[item.name,...item.aliases].some(label=>{
     const labelTokens=queryTokens(label);return labelTokens.length>0&&labelTokens.every(token=>tokens.includes(token));
   }));
-  const standardizedIntent=!requestedCodes.length&&standardizedCandidates.length===1&&(!accessoryWords.test(normalizedQuery)||standardizedCandidates[0].id==="valvula-termostatica")?new Set(standardizedCandidates[0].codes):null;
-  const turboIntent=!accessoryWords.test(normalizedQuery)&&/\b(?:bi[ -]?turbo|biturbo|turbo|turbina)\b/.test(normalizedQuery);
+  const standardizedIntent=!requestedCodes.length&&standardizedCandidates.length===1&&(!accessoryQuery||standardizedCandidates[0].id==="valvula-termostatica")?new Set(standardizedCandidates[0].codes):null;
+  const turboIntent=!accessoryQuery&&/\b(?:bi[ -]?turbo|biturbo|turbo|turbina)\b/.test(normalizedQuery);
   const parts = data.parts.filter(row => {
     if((row[4]!==null&&row[4]<=0)||(os&&row[1]!==os))return false;
     const definition=definitions.get(materialCode(row[3]));
