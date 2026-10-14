@@ -1,7 +1,7 @@
 'use client';
 
 import {useMemo,useState} from 'react';
-import {BusFront,CalendarDays,Check,ChevronDown,Clock3,Database,Disc3,Fan,FileSearch,Gauge,GitBranch,Search,Settings2,Wrench,Zap} from 'lucide-react';
+import {ArrowLeftRight,ArrowRight,BusFront,CalendarDays,Check,ChevronDown,Clock3,Database,Disc3,Fan,FileSearch,Gauge,GitBranch,Search,Settings2,Wrench,Zap} from 'lucide-react';
 import {formatDate,formatPrefix,formatRecordNumber,normalize,type Summary,type CatalogData} from '@/lib/fleet';
 import {systems,clientId,type SystemId,type CognitiveIndex,type InvestigationIntent} from '@/lib/cognitive';
 import {Sheet,SheetContent,SheetHeader,SheetTitle,SheetDescription} from '@/components/ui/sheet';
@@ -36,26 +36,32 @@ export function Central({summary,index,catalog,selected,onSelect,onInvestigate,o
   const recentRows=rows.slice(0,5).reverse();
   const memoryEntry=recentRows.find(r=>r[6]===memoryRow)||recentRows[recentRows.length-1];
 
-  return <section className="cognitive-home" aria-labelledby="central-title">
-    <h1 id="central-title" className="sr-only">Central cognitiva da frota</h1>
-    <div className="scene-mobile-base" aria-label="Base integrada"><span><BusFront size={18}/><b>{number(summary?.fleet.length)}</b> veículos</span><span><Database size={18}/><b>{summary?number(summary.counts.p+summary.counts.s):'—'}</b> registros</span></div>
+  return <section className="cognitive-home approved-central" aria-labelledby="central-title">
+    <div className="central-heading">
+      <div><h1 id="central-title">Central da frota</h1><p>Veículo, sistemas e evidências em um só contexto.</p></div>
+      <div className="central-base" aria-label="Base integrada">
+        <span><BusFront size={25}/><span><b>{number(summary?.fleet.length)}</b><small>veículos</small></span></span>
+        <span><Database size={25}/><span><b>{summary?number(summary.counts.p+summary.counts.s):'—'}</b><small>registros{summary?.datasetMode==='synthetic'?' de exemplo':''}</small></span></span>
+      </div>
+    </div>
     <div className="fleet-scene">
       <aside className="scene-context" aria-label="Identidade e sistemas do veículo">
         <section className="scene-identity orbit-surface">
           <span className="scene-panel-label">Veículo selecionado</span>
-          <button className="scene-vehicle" onClick={openVehicles} disabled={!summary}><span className="scene-vehicle-symbol"><BusFront size={32}/></span><span><b>{vehicle?'Prefixo '+formatPrefix(selected):'Carregando veículo'}</b><small>{vehicle?.brand||'Marca não informada'} · {vehicle?.model||'Modelo não informado'}</small></span><Settings2 size={18}/></button>
+          <div className="scene-vehicle"><span className="scene-vehicle-symbol"><BusFront size={32}/></span><span><b>{vehicle?formatPrefix(selected):'—'}</b><small>{vehicle?.brand||'Marca não informada'} · {vehicle?.model||'Modelo não informado'}</small></span></div>
           <div className="scene-identity-meta"><span>Placa <b>{vehicle?.plate||'Não informada'}</b></span><span>Ano <b>{vehicle?.year||'Não informado'}</b></span></div>
+          <button className="scene-change-vehicle" onClick={openVehicles} disabled={!summary}><ArrowLeftRight size={18}/>Trocar veículo</button>
           <button className="scene-base-toggle" aria-expanded={baseExpanded} aria-controls="scene-base-sheet" onClick={()=>setBaseExpanded(true)}><Database size={15}/>Detalhes da base</button>
         </section>
         <section className={'scene-system-selector orbit-surface '+(systemOpen?'is-expanded':'is-collapsed')} aria-label="Selecionar sistema">
-          <h2>Sistemas do veículo</h2>
+          <h2>Sistemas</h2>
           <button className="scene-systems-toggle" aria-expanded={systemOpen} aria-controls="scene-system-options" onClick={()=>setSystemOpen(!systemOpen)}><span>Sistemas do veículo</span><b>{active.label}</b><ChevronDown size={18}/></button>
-          <div className="scene-system-list" id="scene-system-options">{systems.map(s=>{const SystemIcon=icons[s.id];return <button key={s.id} aria-pressed={system===s.id} onClick={()=>chooseSystem(s.id)}><SystemIcon size={24}/><span>{s.label}</span><span className="scene-selection-mark" aria-hidden="true"/></button>})}</div>
+          <div className="scene-system-list" id="scene-system-options">{systems.map(s=>{const SystemIcon=icons[s.id];return <button key={s.id} aria-pressed={system===s.id} onClick={()=>chooseSystem(s.id)}><SystemIcon size={25}/><span>{s.label}</span><ArrowRight className="scene-selection-mark" size={15} aria-hidden="true"/></button>})}</div>
         </section>
       </aside>
 
       <div className="scene-investigation-stack">
-      {!monitor&&<div className="scene-command"><CommandBar compact catalog={catalog} prefix={formatPrefix(selected)} onSubmit={q=>investigate(undefined,q)} onSelectVehicle={openVehicles}/></div>}
+      {!monitor&&<div className="scene-command"><CommandBar compact catalog={catalog} prefix={formatPrefix(selected)} onSubmit={q=>investigate(undefined,q)}/><div className="scene-quick-actions"><button onClick={()=>investigate(undefined,'histórico de '+active.query+' do prefixo '+formatPrefix(selected))}><Clock3 size={17}/>Histórico de {active.label.toLocaleLowerCase('pt-BR')}</button><button onClick={()=>investigate()}><Search size={17}/>Buscar uma peça</button><button onClick={()=>onHistory(selected)}><BusFront size={17}/>Abrir veículo</button></div></div>}
       <SceneModel vehicle={vehicle} index={vi} selected={system} onSystem={chooseSystem} plain={plainView} onPlainChange={()=>setPlainView(!plainView)}/>
       </div>
 
@@ -72,15 +78,15 @@ export function Central({summary,index,catalog,selected,onSelect,onInvestigate,o
           <p className="scene-source-note">EXTRATO GERAL · Movimentação não comprova instalação.</p>
         </section>
         <section className="scene-memory orbit-surface" aria-label="Memória recente do sistema">
-          <h2><Clock3 size={19}/>Memória temporal</h2>
+          <h2><Clock3 size={19}/>Memória recente</h2>
           <p className="scene-memory-label">Movimentações desta família</p>
           {error?<div className="resource-error" role="alert"><p>Os registros de origem estão indisponíveis.</p><button className="text-action" onClick={retry}>Tentar novamente</button></div>:!data?<p role="status">Carregando memória…</p>:recentRows.length?<><div className="scene-memory-track" role="group" aria-label="Selecionar uma movimentação recente">{recentRows.map(r=><button key={r[6]} className="scene-memory-point" aria-pressed={memoryEntry?.[6]===r[6]} aria-label={formatDate(r[0])+' · '+r[3]+' · Linha '+r[6]} title={formatDate(r[0])+' · '+r[3]} onClick={()=>setMemoryRow(r[6])}><span aria-hidden="true"/></button>)}</div>{memoryEntry&&<div className="scene-memory-preview" role="status"><time dateTime={memoryEntry[0]}>{formatDate(memoryEntry[0])}</time><strong>{memoryEntry[3]}</strong><span>EXT-{String(memoryEntry[6]).padStart(7,'0')}</span></div>}</>:<p>Sem movimentações desta família na base integrada.</p>}
           {!monitor&&<button className="scene-link" disabled={!vehicle} onClick={()=>onHistory(selected)}>Abrir memória do veículo</button>}
         </section>
+        {!monitor&&!!peers.length&&<section className="scene-related-fleet orbit-surface" aria-label="Veículos da mesma marca"><h2><GitBranch size={17}/>Da mesma marca</h2><div>{peers.map(v=><button className="scene-neighbor" key={v.code} onClick={()=>chooseVehicle(v.code)} title={formatPrefix(v.code)+' · '+v.model+'. Similaridade cadastral, sem inferir compatibilidade.'}><b>{formatPrefix(v.code)}</b><small>{v.year||'Ano não informado'}</small></button>)}</div><button className="scene-link" onClick={onFleet}>Abrir frota<ArrowRight size={15}/></button></section>}
       </aside>
     </div>
 
-    {!monitor&&!!peers.length&&<div className="scene-related-fleet" aria-label="Veículos da mesma marca"><span><GitBranch size={17}/>Da mesma marca</span>{peers.map(v=><button className="scene-neighbor" key={v.code} onClick={()=>chooseVehicle(v.code)} title={formatPrefix(v.code)+' · '+v.model+'. Similaridade cadastral, sem inferir compatibilidade.'}><BusFront size={18}/><b>{formatPrefix(v.code)}</b><small>{v.year||'Ano não informado'}</small></button>)}<button className="scene-link" onClick={onFleet}>Abrir frota</button></div>}
     <p className="sr-only" role="status">{active.label} do prefixo {formatPrefix(selected)}: {number(stats?.count)} movimentações. Último registro: {stats?.last?formatDate(stats.last):'não localizado'}.</p>
 
     <Sheet open={baseExpanded} onOpenChange={setBaseExpanded}><SheetContent className="query-detail-sheet home-detail-sheet" id="scene-base-sheet"><SheetHeader><SheetTitle>Base integrada</SheetTitle><SheetDescription>Informações reais das planilhas preservadas pelo Jarvis.</SheetDescription></SheetHeader><div className="query-detail-body"><dl className="scene-base-facts"><div><dt><BusFront size={20}/>Veículos operacionais</dt><dd>{number(summary?.fleet.length)}</dd></div><div><dt><Database size={20}/>Registros preservados</dt><dd>{summary?number(summary.counts.p+summary.counts.s):'—'}</dd></div><div><dt><Wrench size={20}/>Serviços registrados</dt><dd>{number(summary?.counts.s)}</dd></div><div><dt><CalendarDays size={20}/>Último registro na base</dt><dd>{index?formatDate(index.latest):'Carregando…'}</dd></div></dl><p className="data-note">Frota operacional de 001 a 559. A data exibida corresponde ao último registro das fontes, não ao horário de sincronização.</p></div></SheetContent></Sheet>

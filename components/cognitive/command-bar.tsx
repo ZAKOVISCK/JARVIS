@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useId,useRef,useState} from 'react';
-import {Activity,ArrowUp,BusFront,ImagePlus,Mic,ScanBarcode,Square} from 'lucide-react';
+import {ArrowRight,BusFront,ImagePlus,Mic,ScanBarcode,Search,Square} from 'lucide-react';
 import {Sheet,SheetContent,SheetHeader,SheetTitle,SheetDescription} from '@/components/ui/sheet';
 import type {CatalogData} from '@/lib/fleet';
 type Speech={lang:string;interimResults:boolean;onresult:((e:{results:{[n:number]:{[n:number]:{transcript:string}}}})=>void)|null;onerror:((e:{error:string})=>void)|null;onend:(()=>void)|null;start:()=>void;stop:()=>void;abort:()=>void};
@@ -17,11 +17,11 @@ export function CommandBar({onSubmit,catalog,prefix='',onSelectVehicle,compact=f
  </div>;
  return <section className={'command-surface'+(compact?' command-inline':'')}>
   <form onSubmit={e=>{e.preventDefault();if(!disabled&&text.trim())onSubmit(text.trim())}}>
-   <span className="command-mark" aria-hidden="true"><Activity size={21}/></span>
+   <span className="command-mark" aria-hidden="true"><Search size={21}/></span>
    <label className="sr-only" htmlFor={id}>O que você precisa descobrir sobre a frota?</label>
-   <input id={id} disabled={disabled} value={text} onChange={e=>setText(e.target.value)} placeholder="O que você precisa descobrir sobre a frota?" maxLength={500}/>
+   <input id={id} disabled={disabled} value={text} onChange={e=>setText(e.target.value)} placeholder="O que você quer investigar?" maxLength={500}/>
    {compact&&controls}
-   <button type="submit" className="command-send" disabled={disabled||!text.trim()} aria-label="Enviar comando"><ArrowUp size={20}/></button>
+   <button type="submit" className="command-send" disabled={disabled||!text.trim()} aria-label="Enviar comando"><ArrowRight size={20}/></button>
   </form>
   {!compact&&controls}
   <input type="file" disabled={disabled||reading} ref={file} accept="image/jpeg,image/png,image/webp" hidden onChange={e=>{if(e.target.files?.[0])void image(e.target.files[0]);e.target.value=''}}/>

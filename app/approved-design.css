@@ -1,0 +1,296 @@
+/* Shared implementation of the approved Órbita desktop references. */
+.orbit-theme .cognitive-os.approved-design {
+  --background:#02111f;
+  --ink:#e6eff7;
+  --dim:#a9c6db;
+  --cyan:#58dff0;
+  --border:#19546f;
+  --orbit-edge:#285b78;
+  --orbit-selected-edge:#42dbea;
+  --orbit-surface:linear-gradient(145deg,#05283b9c,#03192cbb);
+  --orbit-control:linear-gradient(155deg,#08314a88,#041e31bb);
+  --orbit-control-active:linear-gradient(145deg,#07485e99,#052b40dd);
+  display:flex;
+  flex-direction:column;
+  min-height:100svh;
+  background:radial-gradient(ellipse at 48% 35%,#073a5224,transparent 65%),var(--background);
+  color:var(--ink);
+}
+.orbit-theme .cognitive-os.approved-design .os-header {
+  display:grid;
+  grid-template-columns:minmax(275px,1fr) auto minmax(160px,1fr);
+  gap:22px;
+  width:100%;
+  min-height:88px;
+  padding:12px max(20px,calc((100vw - 1880px)/2));
+  background:#02111fed;
+  border-color:#16516a;
+}
+.orbit-theme .cognitive-os.approved-design .os-brand { gap:14px; align-items:center; }
+.orbit-theme .cognitive-os.approved-design .brand-symbol { width:54px; height:54px; flex-shrink:0; }
+.orbital-mark { width:100%; height:100%; stroke:#67e2f2; stroke-width:1.5; }
+.orbit-theme .cognitive-os.approved-design .os-brand b { font-size:1.85rem; font-weight:650; letter-spacing:.22em; line-height:1.2; }
+.orbit-theme .cognitive-os.approved-design .os-brand small { font-size:.69rem; color:#a7cde8; letter-spacing:.075em; margin-top:5px; }
+.orbit-theme .cognitive-os.approved-design .os-navigation {
+  position:static;
+  inset:auto;
+  display:flex;
+  align-self:center;
+  align-items:center;
+  min-height:54px;
+  padding:0;
+  gap:0;
+  border:1px solid #19516d;
+  border-radius:17px;
+  background:#041c2d70;
+  box-shadow:none;
+}
+.orbit-theme .cognitive-os.approved-design .os-navigation a {
+  display:flex;
+  flex-direction:row;
+  gap:10px;
+  min-height:54px;
+  min-width:118px;
+  padding:12px 19px;
+  border:1px solid transparent;
+  border-radius:16px;
+  color:#c2d9e9;
+  font-size:.9rem;
+}
+.orbit-theme .cognitive-os.approved-design .os-navigation a[aria-current=page] {
+  color:#6fe8f3;
+  border-color:#38dbe9;
+  background:linear-gradient(135deg,#064158aa,#042334cc);
+  box-shadow:inset 0 0 0 1px #54e1f00d;
+}
+.orbit-theme .cognitive-os.approved-design .os-navigation a[aria-current=page]:after { display:none; }
+.orbit-theme .cognitive-os.approved-design .os-navigation a:hover { color:#e2fbff; background:#0d3447; }
+.orbit-theme .cognitive-os.approved-design .os-utilities { gap:16px; }
+.orbit-theme .cognitive-os.approved-design .global-command { border-radius:12px; padding:10px 16px; background:#041f3270; color:#d7edf9; min-height:44px; }
+.orbit-theme .cognitive-os.approved-design .is-central .global-command span,
+.orbit-theme .cognitive-os.approved-design.is-central .global-command span { display:inline; }
+.orbit-theme .cognitive-os.approved-design .header-status { margin:0; }
+.orbit-theme .cognitive-os.approved-design .header-status button { border:1px solid #587e9c; border-radius:50%; background:#122d47; color:#c8e4f5; width:44px; height:44px; }
+.orbit-theme .cognitive-os.approved-design .header-status button[aria-pressed=true] { border-color:var(--cyan); color:var(--cyan); }
+.orbit-theme .cognitive-os.approved-design .os-main { width:100%; max-width:1880px; margin:0 auto; padding:16px 20px 22px; flex:1; min-width:0; }
+.orbit-theme .cognitive-os.approved-design.is-central .os-main { padding-top:16px; }
+.orbit-theme .cognitive-os.approved-design .context-bar { display:none; }
+.orbit-theme .cognitive-os.approved-design .dataset-banner { display:flex; align-items:center; gap:9px; margin:0 0 14px; color:#9dbed6; font-size:.69rem; letter-spacing:.08em; line-height:1.7; }
+.orbit-theme .cognitive-os.approved-design .dataset-banner svg { flex-shrink:0; color:#79c4dc; }
+.orbit-theme .cognitive-os.approved-design .dataset-detail { letter-spacing:0; }
+.orbit-theme .cognitive-os.approved-design .os-footer { display:flex; justify-content:space-between; gap:18px; width:100%; max-width:1880px; margin:0 auto; padding:12px 20px; border-top:1px solid #17516b; color:#9ebed5; font-size:.75rem; line-height:1.6; }
+.orbit-theme .cognitive-os.approved-design :is(.central-heading,.workspace-heading) h1 { margin:0; font-size:clamp(1.85rem,2.45vw,2.5rem); font-weight:650; letter-spacing:-.025em; line-height:1.15; }
+.orbit-theme .cognitive-os.approved-design :is(.central-heading,.workspace-heading) p { margin:6px 0 0; color:#abcde2; font-size:1rem; }
+.orbit-theme .cognitive-os.approved-design .workspace-heading { align-items:center; margin-bottom:22px; }
+.orbit-theme .cognitive-os.approved-design :is(.text-action,.action-secondary,.global-command) { border-radius:10px; }
+.orbit-theme .cognitive-os.approved-design .approved-memory-workspace .memory-switch { margin:0 0 20px; border:0; border-bottom:1px solid #1d5774; border-radius:0; padding:0; gap:10px; width:100%; background:transparent; }
+.orbit-theme .cognitive-os.approved-design .approved-memory-workspace .memory-switch button { min-height:52px; padding:12px 22px; border:1px solid #235c79; border-bottom:0; border-radius:12px 12px 0 0; background:#06283b6b; color:#b9d4e7; }
+.orbit-theme .cognitive-os.approved-design .approved-memory-workspace .memory-switch button[aria-pressed=true] { border-color:#39ddec; color:#61e3ee; background:#07415580; box-shadow:inset 0 2px 0 #40deeb; }
+
+/* Home: vehicle identity, an interactive SVG HUD, and source-backed context. */
+.orbit-theme .cognitive-os.approved-design .approved-central { gap:16px; }
+.orbit-theme .cognitive-os.approved-design .central-heading { display:flex; justify-content:space-between; align-items:center; gap:22px; min-height:77px; margin-bottom:2px; }
+.orbit-theme .cognitive-os.approved-design .central-base { display:flex; gap:16px; flex-shrink:0; }
+.orbit-theme .cognitive-os.approved-design .central-base>span { display:flex; align-items:center; gap:16px; padding:13px 20px; border:1px solid #184f6b; border-radius:13px; min-width:138px; background:#041e3199; }
+.orbit-theme .cognitive-os.approved-design .central-base svg { color:#b3e1f4; stroke-width:1.4; }
+.orbit-theme .cognitive-os.approved-design .central-base>span>span { display:grid; gap:3px; }
+.orbit-theme .cognitive-os.approved-design .central-base b { font-size:1.35rem; font-weight:650; line-height:1.1; font-variant-numeric:tabular-nums; }
+.orbit-theme .cognitive-os.approved-design .central-base small { font-size:.75rem; color:#adccdf; }
+.orbit-theme .cognitive-os.approved-design .fleet-scene { grid-template-columns:minmax(250px,.86fr) minmax(0,2.1fr) minmax(300px,1fr); gap:20px; align-items:start; }
+.orbit-theme .cognitive-os.approved-design :is(.scene-context,.scene-evidence) { gap:16px; }
+.orbit-theme .cognitive-os.approved-design :is(.scene-identity,.scene-system-selector,.scene-evidence-card,.scene-memory,.scene-related-fleet) { padding:18px; border:1px solid #195674; border-radius:14px; background:var(--orbit-surface); }
+.orbit-theme .cognitive-os.approved-design .scene-panel-label { display:flex; font-size:.78rem; text-transform:uppercase; letter-spacing:.02em; margin-bottom:18px; color:#b8d6ec; }
+.orbit-theme .cognitive-os.approved-design .scene-vehicle { align-items:center; gap:15px; }
+.orbit-theme .cognitive-os.approved-design .scene-vehicle-symbol { width:56px; height:60px; flex-basis:56px; border-radius:13px; background:#05314c80; }
+.orbit-theme .cognitive-os.approved-design .scene-vehicle b { font-size:2.15rem; line-height:1.1; letter-spacing:-.025em; }
+.orbit-theme .cognitive-os.approved-design .scene-vehicle small { font-size:.82rem; line-height:1.5; color:#aecde1; }
+.orbit-theme .cognitive-os.approved-design .scene-identity-meta { gap:8px 12px; margin:12px 0 16px; font-size:.76rem; }
+.orbit-theme .cognitive-os.approved-design .scene-change-vehicle { width:100%; border:1px solid #38799b; border-radius:11px; background:var(--orbit-control); min-height:46px; color:#d4eaf7; }
+.orbit-theme .cognitive-os.approved-design .scene-change-vehicle:hover { background:#103c50; }
+.orbit-theme .cognitive-os.approved-design .scene-base-toggle { min-height:30px; margin:7px 0 -5px auto; border:0; border-radius:0; padding:4px 0; font-size:.72rem; background:none; color:#a2c4d8; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-system-selector h2 { font-size:1.02rem; font-weight:600; margin:0 0 16px; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list { gap:1px; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button { display:flex; gap:15px; padding:13px 12px; border:0; border-bottom:1px solid #1f4f65; border-radius:0; min-height:56px; background:transparent; box-shadow:none; font-size:.93rem; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button:last-child { border-bottom:0; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button[aria-pressed=true] { background:linear-gradient(100deg,#073d52cc,#05293dcc); border:1px solid #3be0ed; border-left:3px solid #6cecf7; border-radius:10px; color:#63e3ef; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button:hover { background:#0a3547; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button>svg { color:#bad8e9; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button[aria-pressed=true]>svg { color:#80eaf4; }
+.orbit-theme .cognitive-os.approved-design .scene-selection-mark { display:none; width:15px; height:15px; border-radius:0; background:none; margin-left:auto; }
+.orbit-theme .cognitive-os.approved-design .scene-system-list button[aria-pressed=true] .scene-selection-mark { display:block; background:none; }
+.orbit-theme .cognitive-os.approved-design .scene-investigation-stack { gap:14px; }
+.orbit-theme .cognitive-os.approved-design .scene-model { order:0; }
+.orbit-theme .cognitive-os.approved-design .scene-model-canvas { aspect-ratio:1000/620; background:radial-gradient(ellipse at 50% 57%,#1261803a,transparent 65%); }
+.orbit-theme .cognitive-os.approved-design .scene-bus-image { top:13%; left:0; width:100%; height:auto; max-width:100%; }
+.orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots>.scene-hotspot { left:var(--hotspot-x); right:auto; top:var(--hotspot-y); transform:translate(-50%,-50%); min-height:44px; padding:10px 15px; border:1px solid #4791b7; border-radius:12px; background:#031f32ee; color:#d5eafa; box-shadow:none; font-size:.83rem; }
+.orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots>.scene-hotspot[aria-pressed=true] { border-color:#3bdcec; color:#5de6f0; background:#063047ee; box-shadow:0 0 16px #40dff51f; }
+.orbit-theme .cognitive-os.approved-design .scene-connectors g { stroke:#27b9d3; fill:#6be3ef; opacity:.78; }
+.orbit-theme .cognitive-os.approved-design .scene-connectors path { stroke-width:1.5; }
+.orbit-theme .cognitive-os.approved-design .scene-connectors g.is-selected { opacity:1; stroke:#65edf7; }
+.orbit-theme .cognitive-os.approved-design .scene-model figcaption { justify-content:center; gap:14px; padding:0; color:#98b8d1; font-size:.7rem; }
+.orbit-theme .cognitive-os.approved-design .scene-view-option { min-height:30px; padding:4px 8px; font-size:.7rem; border:0; border-radius:6px; background:transparent; color:#94c1d7; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-command { order:1; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-surface { border:1px solid #3b81a0; border-radius:14px; background:linear-gradient(120deg,#082b416b,#031e30b3); padding:5px 7px 5px 18px; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-surface form { display:flex; align-items:center; gap:12px; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-surface input:not([type=file]) { min-height:48px; font-size:.92rem; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-mark { color:#a4cfe3; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-tools { flex:none; margin:0; padding:0; gap:0; border:0; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-tools button { width:37px; min-width:37px; min-height:44px; height:44px; padding:7px; border:0; border-radius:7px; background:none; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-tools button>span { display:none; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-send { width:48px; min-width:48px; height:48px; border-radius:50%; padding:0; background:#47dcef; border:1px solid #8bf2fa; color:#032537; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-command .command-send:disabled { background:#155069; border-color:#246782; color:#86b5ca; opacity:1; }
+.orbit-theme .cognitive-os.approved-design .scene-quick-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:9px; margin-top:12px; }
+.orbit-theme .cognitive-os.approved-design .scene-quick-actions button { min-height:41px; padding:8px 12px; border:1px solid #315c76; border-radius:999px; background:#041f31b3; color:#b9d8e9; font-size:.76rem; }
+.orbit-theme .cognitive-os.approved-design .scene-quick-actions button:hover { color:#d7f7fb; background:#113e50; }
+.orbit-theme .cognitive-os.approved-design .scene-panel-heading { border-bottom:1px solid #215775; padding-bottom:12px; margin-bottom:16px; }
+.orbit-theme .cognitive-os.approved-design .scene-panel-heading h2 { font-size:1.01rem; font-weight:600; }
+.orbit-theme .cognitive-os.approved-design .scene-panel-heading>span { padding:5px 8px; border:1px solid #23627e; border-radius:9px; font-size:.73rem; }
+.orbit-theme .cognitive-os.approved-design .scene-evidence-awaiting { background:transparent; border:0; padding:6px 0 8px; min-height:180px; gap:13px; }
+.orbit-theme .cognitive-os.approved-design .scene-evidence-glyph { width:60px; height:60px; border-radius:0; background:none; color:#aecdee; }
+.orbit-theme .cognitive-os.approved-design .scene-evidence-glyph svg { width:42px; height:42px; stroke-width:1.4; }
+.orbit-theme .cognitive-os.approved-design .scene-evidence-awaiting h3 { font-size:.98rem; font-weight:600; }
+.orbit-theme .cognitive-os.approved-design .scene-evidence-awaiting p { font-size:.82rem; }
+.orbit-theme .cognitive-os.approved-design .scene-evidence-awaiting .scene-primary { min-height:44px; width:100%; border-radius:11px; box-shadow:none; border-color:#438db1; }
+.orbit-theme .cognitive-os.approved-design .scene-source-summary { border-top:1px solid #22536d; padding-top:13px; font-size:.74rem; gap:3px 10px; margin-top:12px; }
+.orbit-theme .cognitive-os.approved-design .scene-source-summary>span { width:100%; }
+.orbit-theme .cognitive-os.approved-design .scene-source-summary>.scene-link { margin:0; font-size:.72rem; min-height:28px; padding:4px 0; border:0; background:transparent; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-source-note { margin:6px 0 0; font-size:.7rem; }
+.orbit-theme .cognitive-os.approved-design .scene-memory h2 { font-size:.98rem; font-weight:600; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-label { font-size:.73rem; margin:7px 0 0; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-track { min-height:28px; margin:0; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-point { width:34px; min-width:34px; height:34px; min-height:34px; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-preview { margin:0 0 4px; padding:9px 10px; min-height:0; gap:3px; border-radius:9px; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-preview time { font-size:.7rem; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-preview strong { font-size:.78rem; }
+.orbit-theme .cognitive-os.approved-design .scene-memory-preview>span { font-size:.68rem; }
+.orbit-theme .cognitive-os.approved-design .scene-memory>.scene-link { justify-content:flex-end; min-height:28px; padding:4px 0; border:0; background:none; box-shadow:none; font-size:.74rem; }
+.orbit-theme .cognitive-os.approved-design .scene-related-fleet { display:block; }
+.orbit-theme .cognitive-os.approved-design .scene-related-fleet h2 { display:flex; align-items:center; gap:10px; margin:0 0 13px; font-size:.96rem; font-weight:600; }
+.orbit-theme .cognitive-os.approved-design .scene-related-fleet>div { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.orbit-theme .cognitive-os.approved-design .scene-related-fleet .scene-neighbor { flex-direction:column; gap:3px; padding:8px 4px; min-height:45px; border-radius:10px; }
+.orbit-theme .cognitive-os.approved-design .scene-related-fleet .scene-neighbor small { font-size:.65rem; }
+.orbit-theme .cognitive-os.approved-design .scene-related-fleet>.scene-link { display:flex; justify-content:flex-end; min-height:26px; padding:5px 0 0; margin-top:7px; font-size:.72rem; border:0; background:none; box-shadow:none; }
+.orbit-theme .cognitive-os.approved-design .scene-model.is-plain .scene-hotspots { position:static; display:flex; justify-content:center; flex-wrap:wrap; gap:12px; padding:24px; }
+.orbit-theme .cognitive-os.approved-design .scene-model.is-plain .scene-model-canvas .scene-hotspots>.scene-hotspot { position:static; transform:none; }
+.orbit-theme .cognitive-os.approved-design.monitor-mode .os-navigation { display:none; }
+.orbit-theme .cognitive-os.approved-design.monitor-mode .os-header { grid-template-columns:1fr auto; }
+.orbit-theme .cognitive-os.approved-design.monitor-mode .central-heading { display:none; }
+
+/* Keep the home HUD within a desktop viewport without hiding live information. */
+@media(min-width:1251px) {
+  .orbit-theme .cognitive-os.approved-design .dataset-banner { margin-bottom:8px; }
+  .orbit-theme .cognitive-os.approved-design .central-heading { min-height:67px; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas { aspect-ratio:1000/585; }
+  .orbit-theme .cognitive-os.approved-design .scene-bus-image { top:0; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence-card { padding:14px 18px; }
+  .orbit-theme .cognitive-os.approved-design .scene-panel-heading { padding-bottom:9px; margin-bottom:8px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence-awaiting { min-height:160px; padding:0; gap:8px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence-glyph { width:44px; height:44px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence-glyph svg { width:36px; height:36px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence-awaiting .scene-primary { min-height:40px; margin-top:0; padding:8px 12px; }
+  .orbit-theme .cognitive-os.approved-design .scene-source-summary { padding-top:8px; margin-top:8px; font-size:.75rem; gap:0 8px; }
+  .orbit-theme .cognitive-os.approved-design .scene-source-summary>span { line-height:1.5; }
+  .orbit-theme .cognitive-os.approved-design .scene-source-summary>.scene-link { min-height:25px; padding:3px 0; }
+  .orbit-theme .cognitive-os.approved-design .scene-source-note { margin:4px 0 0; font-size:.7rem; line-height:1.45; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory { padding:14px 18px; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-label { margin:3px 0 0; font-size:.72rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-preview { padding:7px 10px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:2px 9px; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-preview time { grid-column:1; grid-row:1; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-preview strong { grid-column:2; grid-row:1/3; align-self:center; font-size:.75rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-preview>span { grid-column:1; grid-row:2; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet { padding:13px 18px; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet h2 { margin-bottom:8px; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet .scene-neighbor { min-height:36px; padding:6px; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet .scene-neighbor small { display:none; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet>.scene-link { min-height:23px; margin-top:3px; }
+}
+
+@media(max-width:1250px) {
+  .orbit-theme .cognitive-os.approved-design .os-header { grid-template-columns:1fr auto; gap:12px; }
+  .orbit-theme .cognitive-os.approved-design .os-navigation { grid-column:1/-1; grid-row:2; justify-self:center; }
+  .orbit-theme .cognitive-os.approved-design .fleet-scene { grid-template-columns:245px minmax(0,1fr); gap:16px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence { grid-column:1/-1; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:start; }
+  .orbit-theme .cognitive-os.approved-design .scene-source-note { font-size:.73rem; }
+}
+@media(max-width:900px) {
+  .orbit-theme .cognitive-os.approved-design .central-heading { align-items:flex-start; flex-direction:column; gap:16px; }
+  .orbit-theme .cognitive-os.approved-design .central-base { width:100%; }
+  .orbit-theme .cognitive-os.approved-design .central-base>span { flex:1; }
+  .orbit-theme .cognitive-os.approved-design .fleet-scene { grid-template-columns:minmax(0,1fr); }
+  .orbit-theme .cognitive-os.approved-design .scene-context { grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
+  .orbit-theme .cognitive-os.approved-design .scene-system-selector h2 { display:block; }
+  .orbit-theme .cognitive-os.approved-design .scene-systems-toggle { display:none; }
+  .orbit-theme .cognitive-os.approved-design .scene-system-selector.is-collapsed .scene-system-list { display:grid; }
+  .orbit-theme .cognitive-os.approved-design .scene-investigation-stack { gap:12px; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots { display:block; }
+  .orbit-theme .cognitive-os.approved-design .scene-connectors { display:block; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots>.scene-hotspot { padding:8px 12px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence { grid-template-columns:1fr 1fr; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet { grid-column:1/-1; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet>div { display:flex; flex-wrap:wrap; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet .scene-neighbor { min-width:88px; }
+}
+@media(max-width:700px) {
+  .orbit-theme .cognitive-os.approved-design .os-header { position:sticky; grid-template-columns:minmax(0,1fr) auto; min-height:72px; padding:10px 14px; gap:8px; backdrop-filter:none; -webkit-backdrop-filter:none; }
+  .orbit-theme .cognitive-os.approved-design .brand-symbol { width:39px; height:39px; }
+  .orbit-theme .cognitive-os.approved-design .os-brand { gap:8px; }
+  .orbit-theme .cognitive-os.approved-design .os-brand b { font-size:1.23rem; letter-spacing:.15em; }
+  .orbit-theme .cognitive-os.approved-design .os-brand small { font-size:.55rem; letter-spacing:.02em; display:block; }
+  .orbit-theme .cognitive-os.approved-design .os-utilities { gap:7px; }
+  .orbit-theme .cognitive-os.approved-design .global-command { padding:9px; min-width:44px; }
+  .orbit-theme .cognitive-os.approved-design .global-command span,
+  .orbit-theme .cognitive-os.approved-design.is-central .global-command span { display:none; }
+  .orbit-theme .cognitive-os.approved-design .header-status button { width:40px; height:40px; }
+  .orbit-theme .cognitive-os.approved-design .os-navigation { position:fixed; inset:auto 0 0; z-index:60; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); padding:5px 4px calc(5px + env(safe-area-inset-bottom)); width:100%; min-height:68px; background:#021625f5; border-radius:0; border:0; border-top:1px solid #29667e; backdrop-filter:blur(12px); }
+  .orbit-theme .cognitive-os.approved-design .os-navigation a { min-width:0; min-height:58px; font-size:.68rem; flex-direction:column; gap:5px; padding:6px 3px; border-radius:10px; }
+  .orbit-theme .cognitive-os.approved-design .os-navigation a svg { width:20px; height:20px; }
+  .orbit-theme .cognitive-os.approved-design .os-main { padding:14px 14px 24px; }
+  .orbit-theme .cognitive-os.approved-design .dataset-banner { font-size:.6rem; gap:6px; margin-bottom:16px; }
+  .orbit-theme .cognitive-os.approved-design .dataset-detail { display:block; font-size:.65rem; }
+  .orbit-theme .cognitive-os.approved-design .os-footer { flex-direction:column; gap:4px; padding:14px 14px calc(90px + env(safe-area-inset-bottom)); font-size:.69rem; }
+  .orbit-theme .cognitive-os.approved-design .central-heading { gap:14px; min-height:0; }
+  .orbit-theme .cognitive-os.approved-design :is(.central-heading,.workspace-heading) h1 { font-size:1.8rem; }
+  .orbit-theme .cognitive-os.approved-design :is(.central-heading,.workspace-heading) p { font-size:.9rem; }
+  .orbit-theme .cognitive-os.approved-design .central-base { gap:10px; }
+  .orbit-theme .cognitive-os.approved-design .central-base>span { padding:12px; gap:10px; min-width:0; }
+  .orbit-theme .cognitive-os.approved-design .central-base b { font-size:1.2rem; }
+  .orbit-theme .cognitive-os.approved-design .central-base small { font-size:.7rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-context { grid-template-columns:minmax(0,1fr); }
+  .orbit-theme .cognitive-os.approved-design .scene-system-selector { padding:14px; }
+  .orbit-theme .cognitive-os.approved-design .scene-system-selector h2 { margin-bottom:9px; }
+  .orbit-theme .cognitive-os.approved-design .scene-system-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+  .orbit-theme .cognitive-os.approved-design .scene-system-list button { border:1px solid #20516b; border-radius:9px; font-size:.8rem; padding:10px; gap:8px; min-height:48px; }
+  .orbit-theme .cognitive-os.approved-design .scene-system-list button:last-child { border:1px solid #20516b; grid-column:1/-1; }
+  .orbit-theme .cognitive-os.approved-design .scene-selection-mark { display:none!important; }
+  .orbit-theme .cognitive-os.approved-design .scene-identity-meta { font-size:.8rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-model { border-top:0; padding-top:0; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas { aspect-ratio:1000/760; }
+  .orbit-theme .cognitive-os.approved-design .scene-bus-image { top:7%; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots { position:static; display:flex; flex-wrap:wrap; align-content:flex-end; justify-content:center; gap:7px; min-height:100%; padding-top:61%; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots>.scene-hotspot { position:static; transform:none; padding:7px 9px; font-size:.71rem; min-height:38px; }
+  .orbit-theme .cognitive-os.approved-design .scene-model-canvas .scene-hotspots>.scene-hotspot svg { width:15px; height:15px; }
+  .orbit-theme .cognitive-os.approved-design .scene-connectors { display:none; }
+  .orbit-theme .cognitive-os.approved-design .scene-model figcaption { margin-top:12px; font-size:.7rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-command .command-surface { padding-left:12px; }
+  .orbit-theme .cognitive-os.approved-design .scene-command .command-surface form { display:grid; grid-template-columns:21px minmax(0,1fr) 43px; gap:8px; }
+  .orbit-theme .cognitive-os.approved-design .scene-command .command-surface input:not([type=file]) { min-height:46px; font-size:.88rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-command .command-tools { grid-column:1/-1; grid-row:2; display:flex; justify-content:center; border-top:1px solid #1c4b62; padding:3px 0 0; width:100%; }
+  .orbit-theme .cognitive-os.approved-design .scene-command .command-tools button { width:48px; min-width:48px; }
+  .orbit-theme .cognitive-os.approved-design .scene-command .command-send { grid-column:3; grid-row:1; width:41px; min-width:41px; height:41px; }
+  .orbit-theme .cognitive-os.approved-design .scene-quick-actions { gap:7px; }
+  .orbit-theme .cognitive-os.approved-design .scene-quick-actions button { font-size:.73rem; min-height:44px; padding:8px 10px; }
+  .orbit-theme .cognitive-os.approved-design .scene-evidence { grid-template-columns:minmax(0,1fr); }
+  .orbit-theme .cognitive-os.approved-design .scene-source-summary,.orbit-theme .cognitive-os.approved-design .scene-source-note { font-size:.8rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-preview time,.orbit-theme .cognitive-os.approved-design .scene-memory-preview>span { font-size:.75rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-memory-preview strong { font-size:.88rem; }
+  .orbit-theme .cognitive-os.approved-design .scene-related-fleet { grid-column:auto; }
+  .orbit-theme .cognitive-os.approved-design .workspace-heading { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+  .orbit-theme .cognitive-os.approved-design .approved-memory-workspace .memory-switch { gap:7px; }
+  .orbit-theme .cognitive-os.approved-design .approved-memory-workspace .memory-switch button { padding:10px; font-size:.79rem; min-width:0; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .orbit-theme .cognitive-os.approved-design *, .orbit-theme .cognitive-os.approved-design *::before, .orbit-theme .cognitive-os.approved-design *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+}
+@media(forced-colors:active) {
+  .orbit-theme .cognitive-os.approved-design :is(button,a,input,select,textarea,summary,[tabindex]):focus-visible { outline:2px solid Highlight!important; outline-offset:3px; }
+}
